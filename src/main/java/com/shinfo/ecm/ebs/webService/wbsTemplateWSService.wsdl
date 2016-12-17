@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="WbsTemplateServiceImplService" targetNamespace="http://webService.ebs.ecm.shinfo.com/"
+                  xmlns:ns1="http://cxf.apache.org/bindings/xformat" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://webService.ebs.ecm.shinfo.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified"
+                   targetNamespace="http://webService.ebs.ecm.shinfo.com/"
+                   xmlns:tns="http://webService.ebs.ecm.shinfo.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="getSubProjectList" type="tns:getSubProjectList"/>
+            <xs:element name="getSubProjectListResponse" type="tns:getSubProjectListResponse"/>
+            <xs:element name="getWbsTemplateList" type="tns:getWbsTemplateList"/>
+            <xs:element name="getWbsTemplateListResponse" type="tns:getWbsTemplateListResponse"/>
+            <xs:element name="getWbsTemplateNodesByIndustryTypeAndDisciplineType"
+                        type="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineType"/>
+            <xs:element name="getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse"
+                        type="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse"/>
+            <xs:element name="importElectricPowerOpinons" type="tns:importElectricPowerOpinons"/>
+            <xs:element name="importElectricPowerOpinonsResponse" type="tns:importElectricPowerOpinonsResponse"/>
+            <xs:element name="importRailway" type="tns:importRailway"/>
+            <xs:element name="importRailwayJL" type="tns:importRailwayJL"/>
+            <xs:element name="importRailwayJLResponse" type="tns:importRailwayJLResponse"/>
+            <xs:element name="importRailwayResponse" type="tns:importRailwayResponse"/>
+            <xs:element name="importWSAuditItemAndOpinons" type="tns:importWSAuditItemAndOpinons"/>
+            <xs:element name="importWSAuditItemAndOpinonsResponse" type="tns:importWSAuditItemAndOpinonsResponse"/>
+            <xs:element name="importWSBudgetAndDetails" type="tns:importWSBudgetAndDetails"/>
+            <xs:element name="importWSBudgetAndDetailsResponse" type="tns:importWSBudgetAndDetailsResponse"/>
+            <xs:element name="importWSExtimateDetails" type="tns:importWSExtimateDetails"/>
+            <xs:element name="importWSExtimateDetailsResponse" type="tns:importWSExtimateDetailsResponse"/>
+            <xs:element name="importWSSettlementAndDetails" type="tns:importWSSettlementAndDetails"/>
+            <xs:element name="importWSSettlementAndDetailsResponse" type="tns:importWSSettlementAndDetailsResponse"/>
+            <xs:complexType name="importWSAuditItemAndOpinons">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="auditItemList" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subjId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSAuditItemAndOpinonsResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSExtimateDetails">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="extimateList" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subjId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="type" type="xs:string"/>
+                    <xs:element minOccurs="0" name="orderNum" type="xs:int"/>
+                    <xs:element minOccurs="0" name="isTheLast" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSExtimateDetailsResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importRailwayJL">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="railwayXml" type="xs:string"/>
+                    <xs:element minOccurs="0" name="proId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="railwayId" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importRailwayJLResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="industryType" type="xs:string"/>
+                    <xs:element minOccurs="0" name="disciplineType" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSBudgetAndDetails">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="budgetList" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subjId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="type" type="xs:string"/>
+                    <xs:element minOccurs="0" name="orderNum" type="xs:int"/>
+                    <xs:element minOccurs="0" name="isTheLast" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSBudgetAndDetailsResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importRailway">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="railwayXml" type="xs:string"/>
+                    <xs:element minOccurs="0" name="proId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="railwayId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="isSupplement" type="xs:string"/>
+                    <xs:element minOccurs="0" name="auditItemJson" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importRailwayResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getWbsTemplateList">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="getWbsTemplateListResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getSubProjectList">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="projName" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getSubProjectListResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSSettlementAndDetails">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="settlementList" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subjId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="type" type="xs:string"/>
+                    <xs:element minOccurs="0" name="orderNum" type="xs:int"/>
+                    <xs:element minOccurs="0" name="isTheLast" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importWSSettlementAndDetailsResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importElectricPowerOpinons">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="electricItemList" type="xs:string"/>
+                    <xs:element minOccurs="0" name="subjId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="timeStamp" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="type" type="xs:string"/>
+                    <xs:element minOccurs="0" name="orderNum" type="xs:int"/>
+                    <xs:element minOccurs="0" name="isTheLast" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="importElectricPowerOpinonsResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ParseException" type="tns:ParseException"/>
+            <xs:complexType name="ParseException">
+                <xs:sequence/>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="importWSSettlementAndDetails">
+        <wsdl:part element="tns:importWSSettlementAndDetails" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importRailway">
+        <wsdl:part element="tns:importRailway" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWbsTemplateList">
+        <wsdl:part element="tns:getWbsTemplateList" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getSubProjectListResponse">
+        <wsdl:part element="tns:getSubProjectListResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSBudgetAndDetailsResponse">
+        <wsdl:part element="tns:importWSBudgetAndDetailsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse">
+        <wsdl:part element="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSAuditItemAndOpinons">
+        <wsdl:part element="tns:importWSAuditItemAndOpinons" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSExtimateDetails">
+        <wsdl:part element="tns:importWSExtimateDetails" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getSubProjectList">
+        <wsdl:part element="tns:getSubProjectList" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSBudgetAndDetails">
+        <wsdl:part element="tns:importWSBudgetAndDetails" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWbsTemplateListResponse">
+        <wsdl:part element="tns:getWbsTemplateListResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSExtimateDetailsResponse">
+        <wsdl:part element="tns:importWSExtimateDetailsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importElectricPowerOpinonsResponse">
+        <wsdl:part element="tns:importElectricPowerOpinonsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSSettlementAndDetailsResponse">
+        <wsdl:part element="tns:importWSSettlementAndDetailsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importWSAuditItemAndOpinonsResponse">
+        <wsdl:part element="tns:importWSAuditItemAndOpinonsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importRailwayResponse">
+        <wsdl:part element="tns:importRailwayResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+        <wsdl:part element="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineType" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importElectricPowerOpinons">
+        <wsdl:part element="tns:importElectricPowerOpinons" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importRailwayJL">
+        <wsdl:part element="tns:importRailwayJL" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="importRailwayJLResponse">
+        <wsdl:part element="tns:importRailwayJLResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ParseException">
+        <wsdl:part element="tns:ParseException" name="ParseException">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="WbsTemplateServiceImpl">
+        <wsdl:operation name="importWSAuditItemAndOpinons">
+            <wsdl:input message="tns:importWSAuditItemAndOpinons" name="importWSAuditItemAndOpinons">
+            </wsdl:input>
+            <wsdl:output message="tns:importWSAuditItemAndOpinonsResponse" name="importWSAuditItemAndOpinonsResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:ParseException" name="ParseException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="importWSExtimateDetails">
+            <wsdl:input message="tns:importWSExtimateDetails" name="importWSExtimateDetails">
+            </wsdl:input>
+            <wsdl:output message="tns:importWSExtimateDetailsResponse" name="importWSExtimateDetailsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importRailwayJL">
+            <wsdl:input message="tns:importRailwayJL" name="importRailwayJL">
+            </wsdl:input>
+            <wsdl:output message="tns:importRailwayJLResponse" name="importRailwayJLResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+            <wsdl:input message="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineType"
+                        name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+            </wsdl:input>
+            <wsdl:output message="tns:getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse"
+                         name="getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importWSBudgetAndDetails">
+            <wsdl:input message="tns:importWSBudgetAndDetails" name="importWSBudgetAndDetails">
+            </wsdl:input>
+            <wsdl:output message="tns:importWSBudgetAndDetailsResponse" name="importWSBudgetAndDetailsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importRailway">
+            <wsdl:input message="tns:importRailway" name="importRailway">
+            </wsdl:input>
+            <wsdl:output message="tns:importRailwayResponse" name="importRailwayResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:ParseException" name="ParseException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getWbsTemplateList">
+            <wsdl:input message="tns:getWbsTemplateList" name="getWbsTemplateList">
+            </wsdl:input>
+            <wsdl:output message="tns:getWbsTemplateListResponse" name="getWbsTemplateListResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getSubProjectList">
+            <wsdl:input message="tns:getSubProjectList" name="getSubProjectList">
+            </wsdl:input>
+            <wsdl:output message="tns:getSubProjectListResponse" name="getSubProjectListResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importWSSettlementAndDetails">
+            <wsdl:input message="tns:importWSSettlementAndDetails" name="importWSSettlementAndDetails">
+            </wsdl:input>
+            <wsdl:output message="tns:importWSSettlementAndDetailsResponse" name="importWSSettlementAndDetailsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importElectricPowerOpinons">
+            <wsdl:input message="tns:importElectricPowerOpinons" name="importElectricPowerOpinons">
+            </wsdl:input>
+            <wsdl:output message="tns:importElectricPowerOpinonsResponse" name="importElectricPowerOpinonsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="WbsTemplateServiceImplServiceSoapBinding" type="tns:WbsTemplateServiceImpl">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="importWSAuditItemAndOpinons">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importWSAuditItemAndOpinons">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importWSAuditItemAndOpinonsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ParseException">
+                <soap:fault name="ParseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="importRailwayJL">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importRailwayJL">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importRailwayJLResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importWSExtimateDetails">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importWSExtimateDetails">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importWSExtimateDetailsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getWbsTemplateNodesByIndustryTypeAndDisciplineType">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getWbsTemplateNodesByIndustryTypeAndDisciplineTypeResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importRailway">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importRailway">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importRailwayResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ParseException">
+                <soap:fault name="ParseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="importWSBudgetAndDetails">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importWSBudgetAndDetails">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importWSBudgetAndDetailsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getWbsTemplateList">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getWbsTemplateList">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getWbsTemplateListResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getSubProjectList">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getSubProjectList">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getSubProjectListResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importWSSettlementAndDetails">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importWSSettlementAndDetails">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importWSSettlementAndDetailsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="importElectricPowerOpinons">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="importElectricPowerOpinons">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="importElectricPowerOpinonsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="WbsTemplateServiceImplService">
+        <wsdl:port binding="tns:WbsTemplateServiceImplServiceSoapBinding" name="WbsTemplateServiceImplPort">
+            <soap:address location="http://10.128.143.23:3000/ebs/webService/wbsTemplateWSService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
