@@ -1,0 +1,11 @@
+*.iml
+.idea/
+
+.gradle/
+
+.build/
+build/
+src/test/
+*.prej
+
+./classes/
