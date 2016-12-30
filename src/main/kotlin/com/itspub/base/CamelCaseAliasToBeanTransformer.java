@@ -53,12 +53,30 @@ public class CamelCaseAliasToBeanTransformer implements ResultTransformer {
                         val = LocalDateConverter.INSTANCE.convertToEntityAttribute((java.sql.Date) val);
                     }
                 }*/
-                setters[i].set(obj, val, null);
+
+                Setter setter = setters[i];
+
+                // 参数类型
+                Class<?> pClass = setter.getMethod().getParameterTypes()[0];
+
+                // 添加处理
+                if (null != val) {
+                    if (pClass.getSuperclass() == Enum.class) {
+                        // val = handleEnumPropertyValue(val, (Class<? extends Enum>) pClass);
+                    }
+                }
+
+                setter.set(obj, val, null);
             }
             return obj;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(type + "实例化出错");
         }
+    }
+
+    private Object handleEnumPropertyValue(Object val, Class<? extends Enum> pClass) {
+        // return EnumConverterFactory.INSTANCE.getConverter(pClass).convert(val.toString());
+        return null;
     }
 
     private String underScoreCaseToCamelCase(String underScoreCase) {

@@ -27,28 +27,25 @@
 
     <div data-options="region:'north'" style="height: 50px">
         <input type="button" value="关联模板" id="relateTemplateBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
-        <input type="button" value="关联模板明细" id="relateTemplateDetailBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
-        <input type="button" value="向集团管理系统导入数据" id="importBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
+        <input type="button" value="导入概算" id="importBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
     </div>
 
     <div data-options="region:'center'">
 
-        <table id="datagrid" class="easyui-datagrid"  fit="true"
-               data-options="method: 'get', pageSize:10,
-						pageNumber:1,
-						rownumbers:true,
-						pagination:true,
+        <table id="datagrid" class="easyui-treegrid"  fit="true"
+               data-options="method: 'get',
 						nowrap:true,
 						fitColumns:false,
 						pageList: [10,20,50,100],
 						singleSelect: 'true',
-						url: '${contextPath}project/listData' ">
+						idField:'id',
+                        treeField:'nodeName',
+						url: '${contextPath}project/${projectId}/projectStructure' ">
             <thead>
             <tr >
                 <th data-options="field:'id',checkbox:true" width="30"></th>
-                <th data-options="field:'projectCode',halign:'center',align:'left'" width="120">项目编号</th>
-                <th data-options="field:'projectName',halign:'center',align:'left'" width="500">项目名称</th>
-                <th data-options="field:'createEmployee',align:'center'" width="150">创建人</th>
+                <th data-options="field:'nodeCode',halign:'center',align:'left'" width="120">项目编号</th>
+                <th data-options="field:'nodeName',halign:'center',align:'left'" width="500">项目名称</th>
             </tr>
             </thead>
         </table>
@@ -66,49 +63,29 @@
                     return showAlert('请选择一个节点进行此操作');
                 }
 
+                if (data.children && 0 < data.children.length) {
+                    return showAlert('选择关联模板操作的节点不能存在子节点结构');
+                }
+
                 var win = openIframeWindow({
-                    'title': '项目关联模板',
+                    'title': '选择集团造价管理信息系统子项目',
                     'width': $(window).width() * 0.8,
                     'height': $(window).height() * 0.8,
-                    'href': '${contextPath}project/' + data.id + "/relateTemplatePage",
+                    'href': '${contextPath}project?cmd=subProjectChoose&projectId=' + data.id,
                     'buttons': [
                         {text: '确定', handler: function() {
                             var iframeWindow = win.find('iframe').get(0).contentWindow;
-                            var row = iframeWindow.$('#datagrid').datagrid('getSelected');
+                            var row = iframeWindow.$('#treegrid').treegrid('getSelected');
                             if (!row) {
-                                return top.showAlert("请选择一个模板记录进行关联操作");
+                                return top.showAlert("请选择一个模板明细记录");
                             } else {
-                                $.post('${contextPath}project/' + data.id + '/wbsTemplateRelate', {'_method': 'PUT', 'disciplineType': row.disciplineType, 'industryType': row.industryType}, function (r) {
-
-                                    top.showAlert(r.msg, function() {
-                                        if (r.success) {
-                                            win.dialog('close');
-                                            $('#datagrid').datagrid('reload')
-                                        }
-                                    })
-                                }, 'json');
+                                alert(row.id);
+                                win.dialog('close');
+                                $('#datagrid').datagrid('reload')
                             }
                         }}
                     ]
                 })
-            });
-
-            $('#relateTemplateDetailBtn').on('click', function() {
-
-                var datagrid = $('#datagrid');
-                var data = datagrid.datagrid('getSelected');
-
-                if (!data) {
-                    return showAlert('请选择一个节点进行此操作');
-                }
-
-                var win = openIframeWindow({
-                    'title': '项目结构关联模板明细',
-                    'width': $(window).width() * 0.8,
-                    'height': $(window).height() * 0.8,
-                    'href': '${contextPath}project/' + data.id + "/relateTemplateDetailPage"
-                });
-                return false;
             });
 
             $('#importBtn').on('click', function() {
@@ -116,10 +93,19 @@
                 var data = datagrid.datagrid('getSelected');
 
                 if (!data) {
-                    return showAlert('请选择一条项目记录进行此操作');
+                    return showAlert('请选择一个节点进行此操作');
                 }
 
-                window.location.href = '${contextPath}project/' + data.id + '/projectStructurePage'
+                if (data.children && 0 < data.children.length) {
+                    return showAlert('选择导入操作的节点不能存在子节点结构');
+                }
+
+                if (!data.tempId) {
+                    return showAlert('选择导入操作的节点还没有关联模板');
+                }
+
+
+
             })
         })
     </script>

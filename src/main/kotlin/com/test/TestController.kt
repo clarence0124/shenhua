@@ -17,7 +17,7 @@ class TestController {
 
     @ResponseBody
     @RequestMapping(value="test1")
-    fun test1(): String {
-        return testService?.test1().toString()
+    fun test1(user: User): String {
+        return user.status.toString()
     }
 }

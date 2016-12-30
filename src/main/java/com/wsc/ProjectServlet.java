@@ -33,15 +33,6 @@ public class ProjectServlet extends HttpServlet {
                     req.getRequestDispatcher("/index.jsp").forward(req, resp);
                     return;
                 }
-                case "listData": {
-                    List<ProjectInfo> projectInfos = ProjectService.listProjectInfo(1, 10);
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("total", projectInfos.size());
-                    map.put("rows", projectInfos);
-                    String jsonString = JSON.toJSONString(map);
-                    resp.getWriter().write(jsonString);
-                    return;
-                }
                 case "listSubProject": {
                     /*QName SERVICE_NAME = new QName("http://webService.ebs.ecm.shinfo.com/", "WbsTemplateServiceImplService");
                     WbsTemplateServiceImplService ss = new WbsTemplateServiceImplService(WbsTemplateServiceImplService.WSDL_LOCATION, SERVICE_NAME);
@@ -57,6 +48,8 @@ public class ProjectServlet extends HttpServlet {
                     Map<String, Object> obj2 = new HashMap<>();
                     obj2.put("id", "oo");
                     obj2.put("subProjName", "ooo");
+                    obj.put("projectName", "总项目名称B");
+                    obj.put("industryTypeName", "板块B");
 
                     List<Object> list = new ArrayList<>();
                     list.add(obj);

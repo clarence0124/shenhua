@@ -7,11 +7,11 @@ data class User(var id: String?, var name: String?) : Human {
 
     constructor(): this(null, null)
 
-    var status: HumanStatus = HumanStatus.ILL
+    var status: HumanStatus = HumanStatus.HEALTH
 
     constructor(id: String) : this(id, null)
 
     init {
-        println(status.getDesc())
+
     }
 }

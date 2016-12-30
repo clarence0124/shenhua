@@ -1,4 +1,4 @@
-package com.wsc;
+package com.wsc.estimate;
 
 import java.util.List;
 

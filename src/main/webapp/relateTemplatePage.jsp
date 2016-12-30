@@ -12,7 +12,7 @@
 <html>
 <head>
     <title>Title</title>
-    <base prefix="${context}" />
+    <base href="${contextPath}" />
     <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/icon.css">
     <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/color.css">
@@ -37,7 +37,7 @@
 						url: '${contextPath}project/wbsTemplateDetail', loadFilter: treegridLoadFilter ">
             <thead>
             <tr >
-                <th data-options="field:'id',checkbox:true" width="30"></th>
+                <%--<th data-options="field:'id',checkbox:true" width="30"></th>--%>
                 <th data-options="field:'name', halign:'center', align:'left'" width="300">名称</th>
                 <th data-options="field:'code', halign:'center', align:'left'" width="120">编码</th>
             </tr>
@@ -46,7 +46,7 @@
 
     </div>
 
-    <div data-options="region:'west'" style="width:400px" title="WBS概算模板列表">
+    <div data-options="region:'west'" style="width:500px" title="WBS概算模板列表">
         <table id="datagrid" class="easyui-datagrid"  fit="true"
                data-options="method: 'get',
 						nowrap:true,
@@ -55,6 +55,7 @@
 						url: '${contextPath}project/wbsTemplate', onSelect: datagridOnSelect ">
             <thead>
             <tr >
+                <th data-options="field:'tempId', checkbox:'true'">板块小类</th>
                 <th data-options="field:'disciplineTypeName', halign:'center', align:'left'" width="200">板块小类</th>
                 <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
             </tr>

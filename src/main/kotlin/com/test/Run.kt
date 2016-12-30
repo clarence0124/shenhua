@@ -8,8 +8,13 @@ import com.test.User
 object Run {
     @JvmStatic
     fun main(args: Array<String>) {
-        var user = User("clarence")
+        /*var user = User("clarence")
         user.name = "陈儒聪"
-        println(user.toString())
+        println(user.toString())*/
+
+        System.out.println(Teacher("陈儒聪"))
+
+        val list = listOf<String?>(null)
+        System.out.println(list?.get(0) ?: "hello")
     }
 }

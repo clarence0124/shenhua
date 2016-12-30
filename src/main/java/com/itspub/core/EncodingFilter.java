@@ -25,7 +25,7 @@ public class EncodingFilter implements Filter {
 			}
 		}
 
-		request.setAttribute("contextPath", request.getServletContext().getContextPath());
+		request.setAttribute("contextPath", request.getServletContext().getContextPath() + "/");
 		chain.doFilter(request, response);
 	}
 

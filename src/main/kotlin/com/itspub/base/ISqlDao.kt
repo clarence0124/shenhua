@@ -5,7 +5,14 @@ package com.itspub.base
  */
 interface ISqlDao {
 
-    fun <T> listByAliasToBean(sql: String, params: Array<Object>?, beanType: Class<T>): List<T>?
-    fun <T> listByAliasToBean(sql: String, params: Array<Object>?, curPage: Int, pageSize: Int, beanType: Class<T>): List<T>?
 
+    fun <T> listByAliasToBean(beanType: Class<T>, sql: String, params: Array<Any>): List<T>
+    fun <T> listByAliasToBean(beanType: Class<T>, sql: String): List<T>
+    fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int, params: Array<Any>): List<T>
+    fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int): List<T>
+    fun <T> getByAliasToBean(beanType: Class<T>, sql: String, params: Array<Any>): T?
+    fun <T> getByAliasToBean(beanType: Class<T>, sql: String): T?
+
+    fun execUpdate(sql: String, params: Array<Any>): Int
+    fun execBatchUpdate(sql: String, paramsList: Array<Array<Any>>): Array<Int>
 }

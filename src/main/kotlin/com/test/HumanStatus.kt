@@ -1,10 +1,12 @@
 package com.test
 
-import com.itspub.base.IntDesc
+import com.itspub.base.EnumType
+import com.itspub.base.Enumerated
 
 /**
  * Created by Administrator on 2016/12/8.
  */
-enum class HumanStatus : IntDesc {
+@Enumerated(EnumType.ORDINAL)
+enum class HumanStatus {
     HEALTH, ILL, DEATH
 }

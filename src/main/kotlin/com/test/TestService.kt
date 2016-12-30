@@ -16,6 +16,6 @@ open class TestService {
     var sqlDao: ISqlDao? = null
 
     open fun test1(): List<User>? {
-        return sqlDao?.listByAliasToBean("select cast(id as varchar) id, name from userinfos", null, User::class.java)
+        return sqlDao?.listByAliasToBean(User::class.java, "select cast(id as varchar) id, name from userinfos")
     }
 }

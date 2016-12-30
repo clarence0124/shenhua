@@ -1,6 +1,5 @@
-package com.wsc;
+package com.wsc.estimate;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,15 +10,15 @@ public class EstimateListWrapper {
     private String id;
     private Integer subprojId;
     private Integer tempId;
-    private BigDecimal mineSum;
-    private BigDecimal civilSum;
-    private BigDecimal installSum;
-    private BigDecimal equipmentSum;
-    private BigDecimal feeSum;
-    private BigDecimal otherSum;
+    private Double mineSum;
+    private Double civilSum;
+    private Double installSum;
+    private Double equipmentSum;
+    private Double feeSum;
+    private Double otherSum;
     private String designCompany;
     private String qualificationNo;
-    private BigDecimal totalSum;
+    private Double totalSum;
     private String estimator;
     private String rptUserName;
     private Date rptDate;
@@ -60,51 +59,51 @@ public class EstimateListWrapper {
         this.tempId = tempId;
     }
 
-    public BigDecimal getMineSum() {
+    public Double getMineSum() {
         return mineSum;
     }
 
-    public void setMineSum(BigDecimal mineSum) {
+    public void setMineSum(Double mineSum) {
         this.mineSum = mineSum;
     }
 
-    public BigDecimal getCivilSum() {
+    public Double getCivilSum() {
         return civilSum;
     }
 
-    public void setCivilSum(BigDecimal civilSum) {
+    public void setCivilSum(Double civilSum) {
         this.civilSum = civilSum;
     }
 
-    public BigDecimal getInstallSum() {
+    public Double getInstallSum() {
         return installSum;
     }
 
-    public void setInstallSum(BigDecimal installSum) {
+    public void setInstallSum(Double installSum) {
         this.installSum = installSum;
     }
 
-    public BigDecimal getEquipmentSum() {
+    public Double getEquipmentSum() {
         return equipmentSum;
     }
 
-    public void setEquipmentSum(BigDecimal equipmentSum) {
+    public void setEquipmentSum(Double equipmentSum) {
         this.equipmentSum = equipmentSum;
     }
 
-    public BigDecimal getFeeSum() {
+    public Double getFeeSum() {
         return feeSum;
     }
 
-    public void setFeeSum(BigDecimal feeSum) {
+    public void setFeeSum(Double feeSum) {
         this.feeSum = feeSum;
     }
 
-    public BigDecimal getOtherSum() {
+    public Double getOtherSum() {
         return otherSum;
     }
 
-    public void setOtherSum(BigDecimal otherSum) {
+    public void setOtherSum(Double otherSum) {
         this.otherSum = otherSum;
     }
 
@@ -124,11 +123,11 @@ public class EstimateListWrapper {
         this.qualificationNo = qualificationNo;
     }
 
-    public BigDecimal getTotalSum() {
+    public Double getTotalSum() {
         return totalSum;
     }
 
-    public void setTotalSum(BigDecimal totalSum) {
+    public void setTotalSum(Double totalSum) {
         this.totalSum = totalSum;
     }
 
