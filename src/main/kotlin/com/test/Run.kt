@@ -16,5 +16,8 @@ object Run {
 
         val list = listOf<String?>(null)
         System.out.println(list?.get(0) ?: "hello")
+
+        var a = null
+        a?.let { System.out.println("it=$it") }
     }
 }

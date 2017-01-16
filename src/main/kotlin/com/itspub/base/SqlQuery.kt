@@ -30,12 +30,12 @@ class SqlQuery constructor(session: Session, queryString: String) {
     }
 
     fun <T> listByAliasToBean(beanType: Class<T>): List<T> {
-        resultTransformer(CamelCaseAliasToBeanTransformer.toBean(beanType))
+        resultTransformer(CamelCaseAliasToBeanTransformer(beanType))
         return query.list() as List<T>
     }
 
     fun <T> getByAliasToBean(beanType: Class<T>): T? {
-        resultTransformer(CamelCaseAliasToBeanTransformer.toBean(beanType))
+        resultTransformer(CamelCaseAliasToBeanTransformer(beanType))
         return query.uniqueResult() as? T
     }
 
