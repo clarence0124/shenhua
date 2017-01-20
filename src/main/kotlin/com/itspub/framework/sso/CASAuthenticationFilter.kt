@@ -76,7 +76,7 @@ class CASAuthenticationFilter : AbstractCasFilter() {
             return
         }
 
-        val assertion = if (session != null) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) as Assertion else null
+        val assertion = if (session != null) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) as? Assertion else null
 
         if (assertion != null) {
             filterChain.doFilter(request, response)

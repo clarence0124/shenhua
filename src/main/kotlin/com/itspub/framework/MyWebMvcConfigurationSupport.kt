@@ -21,7 +21,7 @@ import java.util.*
  * Created by Administrator on 2017/1/16.
  */
 @EnableWebMvc
-@ComponentScan(basePackages = arrayOf("com"))
+//@ComponentScan(basePackages = arrayOf("com"))
 @Configuration
 open class MyWebMvcConfigurationSupport : WebMvcConfigurationSupport(), ApplicationContextAware {
 

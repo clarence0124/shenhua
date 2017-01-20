@@ -1,5 +1,6 @@
 package com.test
 
+import com.itspub.core.vo.CAuthority
 import com.test.User
 
 /**
@@ -19,5 +20,7 @@ object Run {
 
         var a = null
         a?.let { System.out.println("it=$it") }
+
+        CAuthority().id
     }
 }
