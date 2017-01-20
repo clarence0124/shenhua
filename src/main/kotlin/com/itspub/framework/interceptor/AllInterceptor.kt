@@ -1,8 +1,9 @@
-package com.itspub.base
+package com.itspub.framework.interceptor
 
+import com.itspub.framework.interceptor.annotation.SpringInterceptor
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import java.util.*
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Created by Administrator on 2015/4/1.
  */
+@Component(value = "globalInterceptor")
 class AllInterceptor: HandlerInterceptor, ApplicationContextAware {
 
     private val sortInterceptors: ArrayList<Any> = ArrayList()
@@ -47,6 +49,7 @@ class AllInterceptor: HandlerInterceptor, ApplicationContextAware {
 
     @Throws(Exception::class)
     override fun postHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any, modelAndView: ModelAndView?) {
+
         sortInterceptors.reversed().forEach {
             if (it is HandlerInterceptor) {
                 it.postHandle(request, response, handler, modelAndView)

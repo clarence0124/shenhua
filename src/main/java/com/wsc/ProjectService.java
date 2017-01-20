@@ -1,6 +1,6 @@
 package com.wsc;
 
-import com.itspub.base.SqlDao;
+import com.itspub.framework.dao.SqlDao;
 import com.test.User;
 import com.wsc.budget.BudgetVo;
 import com.wsc.estimate.EstimateDetail;

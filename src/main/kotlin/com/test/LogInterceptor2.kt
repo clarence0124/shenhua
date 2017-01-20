@@ -1,6 +1,6 @@
 package com.test
 
-import com.itspub.base.SpringInterceptor
+import com.itspub.framework.interceptor.annotation.SpringInterceptor
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletRequest

@@ -17,7 +17,7 @@ object DbUtils {
             }
             val rs = ps.executeQuery()
             try {
-                return handler.doWitResultSet(rs)
+                return handler.doWithResultSet(rs)
             } finally {
                 rs?.close()
             }

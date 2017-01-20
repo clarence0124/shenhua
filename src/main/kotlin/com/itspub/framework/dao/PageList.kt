@@ -1,4 +1,4 @@
-package com.itspub.base
+package com.itspub.framework.dao
 
 /**
  * Created by Administrator on 2016/12/17.

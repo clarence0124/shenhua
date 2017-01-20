@@ -1,5 +1,6 @@
-package com.itspub.base
+package com.itspub.framework.dao
 
+import com.itspub.framework.dao.CamelCaseAliasToBeanTransformer
 import org.hibernate.SQLQuery
 import org.hibernate.Session
 import org.hibernate.transform.ResultTransformer

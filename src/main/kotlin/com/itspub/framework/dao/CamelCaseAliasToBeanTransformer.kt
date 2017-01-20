@@ -1,5 +1,6 @@
-package com.itspub.base
+package com.itspub.framework.dao
 
+import com.itspub.framework.convert.EnumConverterFactory
 import org.hibernate.property.ChainedPropertyAccessor
 import org.hibernate.property.PropertyAccessor
 import org.hibernate.property.PropertyAccessorFactory
@@ -10,7 +11,7 @@ import java.util.regex.Pattern
 /**
  * Created by Administrator on 2017/1/16.
  */
-open class CamelCaseAliasToBeanTransformer(val type: Class<*>): ResultTransformer {
+internal open class CamelCaseAliasToBeanTransformer(val type: Class<*>): ResultTransformer {
 
     internal var propertyAccessor: PropertyAccessor = ChainedPropertyAccessor(arrayOf(PropertyAccessorFactory.getPropertyAccessor(type, null), PropertyAccessorFactory.getPropertyAccessor("field")))
     internal var setters: Array<Setter?> = arrayOf()

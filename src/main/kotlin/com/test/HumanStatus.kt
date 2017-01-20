@@ -1,7 +1,7 @@
 package com.test
 
-import com.itspub.base.EnumType
-import com.itspub.base.Enumerated
+import com.itspub.framework.convert.EnumType
+import com.itspub.framework.convert.annotation.Enumerated
 
 /**
  * Created by Administrator on 2016/12/8.

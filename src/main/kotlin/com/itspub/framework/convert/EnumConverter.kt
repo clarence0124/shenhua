@@ -1,4 +1,6 @@
-package com.itspub.base
+package com.itspub.framework.convert
+
+import com.itspub.framework.convert.annotation.Enumerated
 
 /**
  * Created by Administrator on 2017/1/16.

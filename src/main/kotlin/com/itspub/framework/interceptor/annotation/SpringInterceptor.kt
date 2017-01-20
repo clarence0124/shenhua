@@ -1,4 +1,4 @@
-package com.itspub.base
+package com.itspub.framework.interceptor.annotation
 
 import org.springframework.stereotype.Component
 

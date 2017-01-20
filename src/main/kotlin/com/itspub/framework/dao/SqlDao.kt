@@ -1,4 +1,4 @@
-package com.itspub.base
+package com.itspub.framework.dao
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
