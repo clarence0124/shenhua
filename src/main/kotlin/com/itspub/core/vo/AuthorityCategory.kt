@@ -7,6 +7,6 @@ import com.itspub.framework.convert.annotation.Enumerated
  * Created by Administrator on 2017/1/20.
  */
 @Enumerated(EnumType.ORDINAL)
-enum class CAuthorityCategory {
+enum class AuthorityCategory {
     PAGE, MENU, DATA
 }

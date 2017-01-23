@@ -1,7 +1,7 @@
 package com.itspub.core.service
 
-import com.itspub.core.dao.CAuthorityDao
-import com.itspub.core.vo.CAuthority
+import com.itspub.core.dao.AuthorityDao
+import com.itspub.core.vo.Authority
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Transactional(readOnly = true, propagation = Propagation.NEVER)
 @Service
-open class CAuthorityServiceImpl @Autowired constructor(@Autowired var cAuthorityDao: CAuthorityDao) : CAuthorityService {
+open class AuthorityServiceImpl @Autowired constructor(@Autowired var authorityDao: AuthorityDao) : AuthorityService {
 
-
-
-    override fun listAll(): List<CAuthority> {
-        return cAuthorityDao!!.listAll()
+    override fun listAll(): List<Authority> {
+        return authorityDao.listAll()
     }
 }

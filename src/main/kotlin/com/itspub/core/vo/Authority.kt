@@ -5,7 +5,7 @@ import java.io.Serializable
 /**
  * Created by Administrator on 2017/1/20.
  */
-class CAuthority : Serializable {
+class Authority : Serializable {
 
     var id: String = ""
     var name: String = ""
@@ -14,7 +14,7 @@ class CAuthority : Serializable {
     var pid: String? = null
     var hierarchy: Int = 0
 
-    var category: CAuthorityCategory? = null
+    var category: AuthorityCategory? = null
     var url: String = ""
     var sort: Int = 0
     var remark: String? = null
