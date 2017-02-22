@@ -2,10 +2,9 @@ package com.itspub.framework.dao
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
-import org.hibernate.jdbc.ReturningWork
 import org.springframework.stereotype.Repository
-import java.sql.Connection
 import java.sql.SQLException
+import java.util.List
 import javax.annotation.Resource
 
 /**
@@ -18,19 +17,19 @@ class SqlDao() : ISqlDao {
 
     fun currentSession(): Session = sessionFactory?.currentSession ?: throw IllegalStateException("can't get the hibernate currentSession")
 
-    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, params: Array<Any>): List<T> {
+    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, params: Array<Any>): java.util.List<T> {
         return SqlQuery(currentSession(), sql).withParams(params).listByAliasToBean(beanType)
     }
 
-    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String): List<T> {
+    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String): java.util.List<T> {
         return SqlQuery(currentSession(), sql).listByAliasToBean(beanType)
     }
 
-    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int, params: Array<Any>): List<T> {
+    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int, params: Array<Any>): java.util.List<T> {
         return SqlQuery(currentSession(), sql).withParams(params).pagination(curPage, pageSize).listByAliasToBean(beanType)
     }
 
-    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int): List<T> {
+    override fun <T> listByAliasToBean(beanType: Class<T>, sql: String, curPage: Int, pageSize: Int): java.util.List<T> {
         return SqlQuery(currentSession(), sql).pagination(curPage, pageSize).listByAliasToBean(beanType)
     }
 
@@ -67,5 +66,13 @@ class SqlDao() : ISqlDao {
             }
         }
         return rs
+    }
+
+    override fun <C> listAutoCast(sql: String, params: Array<Any>): List<C> {
+        return SqlQuery(currentSession(), sql).withParams(params).listAutoCast()
+    }
+
+    override fun <C> getAutoCast(sql: String, params: Array<Any>): C {
+        return SqlQuery(currentSession(), sql).withParams(params).getAutoCast()
     }
 }

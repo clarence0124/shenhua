@@ -133,7 +133,7 @@
     </filter-mapping>
 
     <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+        <listener-class>com.itspub.framework.listener.SpringInitListener</listener-class>
     </listener>
 
     <servlet>

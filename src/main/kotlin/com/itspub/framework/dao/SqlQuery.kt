@@ -1,6 +1,5 @@
 package com.itspub.framework.dao
 
-import com.itspub.framework.dao.CamelCaseAliasToBeanTransformer
 import org.hibernate.SQLQuery
 import org.hibernate.Session
 import org.hibernate.transform.ResultTransformer
@@ -30,9 +29,17 @@ class SqlQuery constructor(session: Session, queryString: String) {
         return this
     }
 
-    fun <T> listByAliasToBean(beanType: Class<T>): List<T> {
+    fun <T> listAutoCast(): java.util.List<T> {
+        return query.list() as java.util.List<T>
+    }
+
+    fun <T> getAutoCast(): T {
+        return query.uniqueResult() as T
+    }
+
+    fun <T> listByAliasToBean(beanType: Class<T>): java.util.List<T> {
         resultTransformer(CamelCaseAliasToBeanTransformer(beanType))
-        return query.list() as List<T>
+        return query.list() as java.util.List<T>
     }
 
     fun <T> getByAliasToBean(beanType: Class<T>): T? {

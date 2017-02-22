@@ -40,11 +40,11 @@ class CASAuthenticationFilter : AbstractCasFilter() {
         if (!isIgnoreInitConfiguration) {
             super.initInternal(filterConfig)
             setCasServerLoginUrl(getPropertyFromInitParams(filterConfig!!, "casServerLoginUrl", null))
-            log.trace("Loaded CasServerLoginUrl parameter: " + this.casServerLoginUrl!!)
+            log.trace("Loaded CasServerLoginUrl parameters: " + this.casServerLoginUrl!!)
             setRenew(parseBoolean(getPropertyFromInitParams(filterConfig, "renew", "false")))
-            log.trace("Loaded renew parameter: " + this.renew)
+            log.trace("Loaded renew parameters: " + this.renew)
             setGateway(parseBoolean(getPropertyFromInitParams(filterConfig, "gateway", "false")))
-            log.trace("Loaded gateway parameter: " + this.gateway)
+            log.trace("Loaded gateway parameters: " + this.gateway)
 
             val gatewayStorageClass = getPropertyFromInitParams(filterConfig, "gatewayStorageClass", null)
 

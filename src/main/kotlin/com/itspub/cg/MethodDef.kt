@@ -1,30 +1,32 @@
 package com.itspub.cg
 
-import com.itspub.util.ReflectUtils.getGenericParameterizedType
 import java.lang.reflect.Method
+import java.nio.file.Path
 
 /**
  * Created by Administrator on 2017/1/23.
  */
-class MethodDef(val method: Method) {
+class MethodDef(val method: Method, val srcPath: Path) {
+
     private val sb: StringBuilder = StringBuilder()
 
     fun gen(): String {
         val methodName = method.name
-        val returnType = method.returnType
+        val returnType = method.returnType.canonicalName
 
-        val gpts = getGenericParameterizedType(method.genericReturnType)
-        val rgt = if (0 < gpts.size) {
-            "<" + gpts.subList(1, gpts.size).fold(gpts[0].simpleName, {x, y ->
-                x + "," + y.simpleName
-            }) + ">"
-        } else {
-            ""
-        }
+        val returnTypeGeneric = CgUtils.getTypeGenericName(method.genericReturnType)
+        val returnTypeGenericDesc = returnTypeGeneric
+                ?.padStart(returnTypeGeneric.length + 1, '<')
+                ?.padEnd(returnTypeGeneric.length + 2, '>') ?: ""
 
-        sb.appendln("override internal fun ${methodName}(): ${returnType}${rgt} {")
+        val parameterNames = CgUtils.getParameterNames(method, srcPath)
+        parameterNames?.forEach (::println)
 
-        sb.appendln("}")
+        sb.appendln("  override fun $methodName(): $returnType$returnTypeGenericDesc {")
+        sb.appendln("    val sql = \"select * from CAuthority\"")
+        sb.appendln("    return sqlDao.listByAliasToBean($returnTypeGeneric::class.java, sql, arrayOf())")
+        sb.appendln("  }")
         return sb.toString()
     }
+
 }

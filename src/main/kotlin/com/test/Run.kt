@@ -1,8 +1,5 @@
 package com.test
 
-import com.itspub.core.vo.CAuthority
-import com.test.User
-
 /**
  * Created by Administrator on 2016/12/7.
  */
@@ -21,6 +18,6 @@ object Run {
         var a = null
         a?.let { System.out.println("it=$it") }
 
-        CAuthority().id
+        println(arrayOf("123", "555").joinToString())
     }
 }

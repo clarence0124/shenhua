@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 open class AuthorityServiceImpl @Autowired constructor(@Autowired var authorityDao: AuthorityDao) : AuthorityService {
 
-    override fun listAll(): List<Authority> {
+    override fun listAll(): java.util.List<Authority> {
         return authorityDao.listAll()
     }
 }
