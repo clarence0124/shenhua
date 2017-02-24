@@ -1,3 +1,5 @@
+package test;
+
 import com.itspub.demo.ws.DemoWebService;
 import com.itspub.demo.ws.IDemoWebService;
 import com.itspub.demo.ws.IDemoWebService_DemoWebServicePort_Client;
@@ -14,5 +16,9 @@ public class UserHelloWorldTest {
         DemoWebService ss = new DemoWebService(DemoWebService.WSDL_LOCATION, SERVICE_NAME);
         IDemoWebService demoWebServicePort = ss.getDemoWebServicePort();
         System.out.println(demoWebServicePort.sayHelloWorld());
+    }
+
+    public static String getTest(String str) {
+        return str;
     }
 }
