@@ -1,12 +1,11 @@
 package com.itspub.framework
 
-import com.itspub.framework.interceptor.AllInterceptor
 import com.itspub.framework.convert.EnumConverterFactory
 import com.itspub.framework.convert.JsonMessageConverter
+import com.itspub.framework.interceptor.AllInterceptor
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.support.FormattingConversionService
 import org.springframework.http.converter.HttpMessageConverter

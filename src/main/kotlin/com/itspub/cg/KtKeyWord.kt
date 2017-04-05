@@ -5,6 +5,7 @@ package com.itspub.cg
  */
 object KtKeyWord {
 
+    val CLASS = "interface"
     val FUN = "fun"
     val OVERRIDE = "override"
     val ANNOTATION = "@"

@@ -3,15 +3,15 @@ package com.itspub.cg
 /**
  * Created by Administrator on 2017/2/21.
  */
-class KtAnnotationMeta(val funMeta: KtFunMeta, val descLine: String) {
+class KtAnnotationMeta(descLine: String, declaredImports: MutableList<String>, currentPackage: Package) {
 
     val name: String = descLine.replace("""\(.*\)""".toRegex(), "")
 
     val type: Class<*> = if (0 < name.indexOf(".")) {
         Class.forName(name)
     } else {
-        val className = funMeta.interfaceMeta.declaredImports.associate { Pair(CgUtils.getSimpleName(it), it) }[name]
-        if (null != className) Class.forName(className) else Class.forName(funMeta.interfaceMeta.filePackage.name + "." + className)
+        val className = declaredImports.associate { Pair(CgUtils.getSimpleName(it), it) }[name]
+        if (null != className) Class.forName(className) else Class.forName(currentPackage.name + "." + className)
     }
 
     val parameters: Map<String, String> = when {

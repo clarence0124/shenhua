@@ -14,7 +14,20 @@ class KtFunCodeGen(private val funMeta: KtFunMeta) {
         val nqas = funMeta.annotationsDesc.filter { it.type == NamedQuery::class.java }
         if (0 < nqas.size) {
             val ps = nqas[0].parameters
-            val queryName = if (0 < ps.size) ps["value"] else "\"${funMeta.name}\""
+            val namespace = ps["namespace"]
+            val value = ps["value"]
+            var queryName = if (null != value && !"".equals(value)) value else "\"${funMeta.name}\""
+            if (null != namespace && !"".equals(namespace)) {
+                queryName = "$namespace + \".\" + $queryName"
+            } else {
+                val filter = funMeta.interfaceMeta.ktAnnotationList.filter { it.type == NamedQuery::class.java }
+                if (0 < filter.size) {
+                    val defaultNamespace = filter[0].parameters["namespace"]
+                    if (null != defaultNamespace && !"".equals(defaultNamespace)) {
+                        queryName = "$defaultNamespace + \".\" + $queryName"
+                    }
+                }
+            }
 
             val queryParams = "arrayOf<Any>(${funMeta.parameters.keys.joinToString()})"
 
@@ -36,7 +49,7 @@ class KtFunCodeGen(private val funMeta: KtFunMeta) {
                 }
             }
         } else {
-            // 此处悬赏补充余下代码
+            
         }
         throw UnsupportedOperationException()
     }

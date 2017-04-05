@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.ModelAndView
 
-
-
 /**
  * Created by Administrator on 2017/1/17.
  */

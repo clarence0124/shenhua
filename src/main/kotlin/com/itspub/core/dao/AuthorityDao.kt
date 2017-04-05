@@ -8,6 +8,7 @@ import java.util.List
 /**
  * Created by Administrator on 2017/1/20.
  */
+@NamedQuery(namespace = "authority")
 interface AuthorityDao {
 
     @NamedQuery()

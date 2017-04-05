@@ -6,10 +6,10 @@ package com.itspub.cg
 class KtFunMeta(val interfaceMeta: KtInterfaceMeta, private val declaredAnnotations : List<String>, val descLine: String) {
 
     val annotationsDesc = declaredAnnotations.map {
-        KtAnnotationMeta(this, it)
+        KtAnnotationMeta(it, interfaceMeta.declaredImports, interfaceMeta.filePackage)
     }
 
-    val name =  descLine.substring(descLine.indexOf(KtKeyWord.FUN) + KtKeyWord.FUN.length, descLine.indexOf("(")).trim()
+    val name = descLine.substring(descLine.indexOf(KtKeyWord.FUN) + KtKeyWord.FUN.length, descLine.indexOf("(")).trim()
 
     val parameters = descLine
                 .substring(descLine.indexOf("(") + 1, descLine.indexOf(")"))

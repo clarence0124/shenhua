@@ -7,6 +7,7 @@ import javax.servlet.FilterConfig
 import javax.servlet.annotation.WebFilter
 
 /**
+ * CAS单点登录认证用
  * Created by Administrator on 2017/1/18.
  */
 // @WebFilter(filterName = "a_ssoFilter2", urlPatterns = arrayOf("/*"))

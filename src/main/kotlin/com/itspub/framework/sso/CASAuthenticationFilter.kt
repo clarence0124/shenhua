@@ -1,6 +1,5 @@
 package com.itspub.framework.sso
 
-import org.jasig.cas.client.authentication.AuthenticationFilter
 import org.jasig.cas.client.authentication.DefaultGatewayResolverImpl
 import org.jasig.cas.client.authentication.GatewayResolver
 import org.jasig.cas.client.util.AbstractCasFilter
@@ -8,11 +7,11 @@ import org.jasig.cas.client.util.CommonUtils
 import org.jasig.cas.client.validation.Assertion
 import java.io.IOException
 import javax.servlet.*
-import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
+ * CAS单点登录认证用
  * Created by Administrator on 2017/1/18.
  */
 // @WebFilter(filterName = "a_ssoFilter1", urlPatterns = arrayOf("/*"))
@@ -71,6 +70,9 @@ class CASAuthenticationFilter : AbstractCasFilter() {
         val response = servletResponse as HttpServletResponse
         val session = request.getSession(false)
 
+        /**
+         * 添加不需要进行认证的扩展内容
+         */
         if (notNeedHandle(request, response)) {
             filterChain.doFilter(request, response)
             return
