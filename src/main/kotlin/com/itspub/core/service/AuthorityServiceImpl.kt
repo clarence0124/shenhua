@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 /**
  * Created by Administrator on 2017/1/20.
  */
-@Transactional(readOnly = true, propagation = Propagation.NEVER)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Service
 open class AuthorityServiceImpl @Autowired constructor(@Autowired var authorityDao: AuthorityDao) : AuthorityService {
 
