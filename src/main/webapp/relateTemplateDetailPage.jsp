@@ -20,7 +20,6 @@
     <script type="text/javascript" src="jquery/jquery.min.js"></script>
 
     <script type="text/javascript" src="jquery/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="jquery/easyui/plugins/jquery.treegrid.js"></script>
     <script type="text/javascript" src="jquery/easyui/locale/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="jquery/utils.js"></script>
 </head>
@@ -28,35 +27,37 @@
 
     <div data-options="region:'north'" style="height: 50px">
         <input type="button" value="关联" id="relateBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
+        <input type="button" value="导出" id="exportBtn" style="height:30px; margin-top:10px; margin-left: 20px;"/>
     </div>
 
     <div data-options="region:'center'">
         <div class="easyui-layout" fit="true">
 
-            <div data-options="region:'center'" title="WBS概算模板明细">
+            <div data-options="region:'center'" title="三算管理系统项目结构">
                 <table id="templateDetails" class="easyui-treegrid"  fit="true"
-                       data-options="method: 'get', nowrap:true, fitColumns:false, singleSelect: 'true', idField:'id', treeField:'name',
-						url: '${contextPath}project/${projectId}/wbsTemplateDetail', loadFilter: treegridLoadFilter ">
+                       data-options="method: 'get', nowrap:true, fitColumns:false, singleSelect: 'false', idField:'id', treeField:'name', rownumbers: false,
+						url: '${contextPath}project/${projectId}/wbsTemplateDetail', loadFilter: treegridLoadFilter, onBeforeSelect: singleCheckOnBeforeSelect">
                     <thead>
                     <tr >
-                        <th data-options="field:'id',checkbox:true" width="30"></th>
+                        <%--<th data-options="field:'id',checkbox:true" width="30"></th>--%>
                         <th data-options="field:'name', halign:'center', align:'left'" width="300">名称</th>
-                        <th data-options="field:'code', halign:'center', align:'left'" width="120">编码</th>
+                            <th data-options="field:'nodeDepth', halign:'center', align:'left'" width="120">深度</th>
+                        <th data-options="field:'brotherOrderNo', halign:'center', align:'left'" width="120">排序</th>
                     </tr>
                     </thead>
                 </table>
 
             </div>
 
-            <div data-options="region:'west'" style="width:500px" title="工程结构">
+            <div data-options="region:'west'" style="width:500px" title="全过程管理系统项目结构">
                 <table id="projectStructures" class="easyui-treegrid"  fit="true"
-                       data-options="method: 'get', nowrap:true, fitColumns:false, singleSelect: 'true', idField:'id', treeField:'nodeName', rownumbers:'true',
-						url: '${contextPath}project/${projectId}/projectStructure', loadFilter: treegridLoadFilter2">
+                       data-options="method: 'get', nowrap:true, fitColumns:true, singleSelect: false, idField:'id', treeField:'nodeName', rownumbers: false,
+						url: '${contextPath}project/${projectId}/projectStructure', loadFilter: treegridLoadFilter2, onBeforeSelect: singleCheckOnBeforeSelect, rowStyler: projectStructuresRowStyler">
                     <thead>
                     <tr >
-                        <th data-options="field:'tempId', checkbox:'true'">板块小类</th>
-                        <th data-options="field:'nodeName', halign:'center', align:'left'" width="200">名称</th>
-                        <th data-options="field:'nodeCode', halign:'center', align:'left'" width="200">编码</th>
+                        <%--<th data-options="field:'id', checkbox: true"></th>--%>
+                        <th data-options="field:'nodeName', halign:'center', align:'left'" width="300">名称</th>
+                        <%--<th data-options="field:'nodeCode', halign:'center', align:'left'" width="200">编码</th>--%>
                     </tr>
                     </thead>
                 </table>
@@ -65,6 +66,23 @@
     </div>
 
     <script>
+
+        function projectStructuresRowStyler(r) {
+            console.log(r)
+            if (r && r.estimateTemplateId) {
+                return 'color:blue';
+            }
+            return '';
+        }
+
+        function leafCheckOnlyFormatter(v, r) {
+            if (r.children && 0 < r.children.length) return '';
+            return '<input type="checkbox" name="projectStructureId" value="' + v + '" />';
+        }
+
+        function singleCheckOnBeforeSelect(r) {
+            return !r.children || 0 == r.children.length;
+        }
 
         function treegridLoadFilter(data) {
             if (data && data.rows) {
@@ -87,23 +105,49 @@
         }
 
         $('#relateBtn').on('click', function() {
-            var td = $('#templateDetails').treegrid('getSelected');
-            var ps = $('#projectStructures').treegrid('getSelected');
-            if (!ps || !td) {
-                return top.showAlert('请选择一个项目结节和一个模板明细进行关联操作');
+
+            var ps = $('#projectStructures').treegrid('getSelections');
+            if (0 == ps.length) {
+                return top.showAlert("请先在全过程管理系统项目结构选择至少一个叶子节点再进行操作。");
             }
 
-            $.post('${contextPath}project/' + ps.id + '/wbsTemplateDetailRelate', {'_method': 'PUT', 'projectStructureId': ps.id, 'wbsTemplateDetailId': td.id}, function (r) {
+            var td = $('#templateDetails').treegrid('getSelected');
+            if (!td) {
+                return top.showAlert('请先在三算管理系统项目结构选择一个叶子节点再进行操作。');
+            }
+
+            var psIds = [];
+            $.each(ps, function() {
+                psIds.push(this.id)
+            });
+
+            $.post('${contextPath}project/wbsTemplateDetailRelate', {'_method': 'PUT', 'projectStructureIds': psIds, 'estimateTemplateId': td.id}, function (r) {
 
                 top.showAlert(r.msg, function() {
                     if (r.success) {
-                        win.dialog('close');
-                        $('#datagrid').datagrid('reload')
+                        $('#projectStructures').treegrid('reload')
                     }
                 })
             }, 'json');
+
+            return false;
         });
 
+
+        $('#exportBtn').on('click', function() {
+            var win = openIframeWindow({
+                'title': '导出预览',
+                'width': $(window).width() * 0.8,
+                'height': $(window).height() * 0.8,
+                'href': '${contextPath}project/${projectId}/exportPage',
+                'buttons': [{text: '确认并导出', handler: function() {
+                    window.location.href = '${contextPath}project/${projectId}/exportResult';
+                }}, {text: '取消', handler: function() {
+                    win.dialog('close')
+                }}]
+            });
+            return false;
+        })
     </script>
 </body>
 </html>

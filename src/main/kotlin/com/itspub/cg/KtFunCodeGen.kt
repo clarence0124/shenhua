@@ -49,8 +49,7 @@ class KtFunCodeGen(private val funMeta: KtFunMeta) {
                 }
             }
         } else {
-            
+            throw UnsupportedOperationException()
         }
-        throw UnsupportedOperationException()
     }
 }

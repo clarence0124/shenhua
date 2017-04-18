@@ -11,7 +11,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Title</title>
+    <title>关联集团三算管理系统子项目</title>
     <base href="${contextPath}" />
     <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/icon.css">
@@ -26,37 +26,20 @@
 </head>
 <body class="easyui-layout" fit="true">
 
-    <div data-options="region:'center'" title="WBS概算模板明细">
-        <table id="treegrid" class="easyui-treegrid"  fit="true"
-               data-options="method: 'get',
-						nowrap:true,
-						fitColumns:false,
-						singleSelect: 'true',
-						idField:'id',
-                        treeField:'name',
-						url: '${contextPath}project/wbsTemplateDetail', loadFilter: treegridLoadFilter ">
-            <thead>
-            <tr >
-                <%--<th data-options="field:'id',checkbox:true" width="30"></th>--%>
-                <th data-options="field:'name', halign:'center', align:'left'" width="300">名称</th>
-                <th data-options="field:'code', halign:'center', align:'left'" width="120">编码</th>
-            </tr>
-            </thead>
-        </table>
-
-    </div>
-
-    <div data-options="region:'west'" style="width:500px" title="集团三算管理系统中的板块分类">
+    <div data-options="region:'center'" title="集团三算管理系统的子项目列表">
         <table id="datagrid" class="easyui-datagrid"  fit="true"
                data-options="method: 'get',
 						nowrap:true,
 						fitColumns:false,
 						singleSelect: 'true',
-						url: '${contextPath}project/wbsTemplate?industryTypeName=${industryTypeName}', onSelect: datagridOnSelect ">
+						idField:'id',
+						url: '${contextPath}wsc/getSubProjectList'">
             <thead>
             <tr >
-                <th data-options="field:'tempId', checkbox:'true'">板块小类</th>
-                <th data-options="field:'disciplineTypeName', halign:'center', align:'left'" width="200">板块小类</th>
+                <th data-options="field:'id',checkbox:true" width="30"></th>
+                <th data-options="field:'subProjName', halign:'center', align:'left'" width="350">子项目名称</th>
+                <th data-options="field:'projectName', halign:'center', align:'left'" width="350">主项目名称</th>
+                <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
                 <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
             </tr>
             </thead>
@@ -71,16 +54,6 @@
                 , disciplineType: row.disciplineType
             }
             $('#treegrid').treegrid('reload')
-        }
-
-        function treegridLoadFilter(data) {
-            if (data && data.rows) {
-                for (var i = 0; i < data.rows.length; i++) {
-                    data.rows[i]._parentId = data.rows[i].pid
-                }
-                return data;
-            }
-            return {rows: []};
         }
     </script>
 </body>

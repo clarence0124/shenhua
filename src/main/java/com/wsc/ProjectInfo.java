@@ -1,5 +1,7 @@
 package com.wsc;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -11,6 +13,10 @@ public class ProjectInfo implements Serializable {
     private String projectName;
     private String projectCode;
     private String createEmployee;
+
+    private String subProjectName;
+    protected String industryTypeName;
+    protected String disciplineTypeName;
 
     public String getId() {
         return id;
@@ -42,5 +48,29 @@ public class ProjectInfo implements Serializable {
 
     public void setCreateEmployee(String createEmployee) {
         this.createEmployee = createEmployee;
+    }
+
+    public String getSubProjectName() {
+        return subProjectName;
+    }
+
+    public void setSubProjectName(String subProjectName) {
+        this.subProjectName = subProjectName;
+    }
+
+    public String getIndustryTypeName() {
+        return industryTypeName;
+    }
+
+    public void setIndustryTypeName(String industryTypeName) {
+        this.industryTypeName = industryTypeName;
+    }
+
+    public String getDisciplineTypeName() {
+        return disciplineTypeName;
+    }
+
+    public void setDisciplineTypeName(String disciplineTypeName) {
+        this.disciplineTypeName = disciplineTypeName;
     }
 }

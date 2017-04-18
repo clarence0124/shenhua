@@ -1,8 +1,11 @@
 package com.wsc;
 
+import com.alibaba.fastjson.JSONArray;
 import com.itspub.framework.dao.SqlDao;
 import com.test.User;
-import com.wsc.budget.BudgetVo;
+import com.wsc.export.budget.BudgetVo;
+import com.wsc.entity.ProjectExt;
+import com.wsc.entity.ProjectStructureExt;
 import com.wsc.estimate.EstimateDetail;
 import com.wsc.estimate.EstimateDetailWrapper;
 import com.wsc.estimate.EstimateListWrapper;
@@ -15,10 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Administrator on 2016/12/15.
@@ -33,7 +37,8 @@ public class ProjectService {
         String sql2 = "select flag status from userInfos";
         List<User> users = this.sqlDao.listByAliasToBean(User.class, sql2);
 
-        final String sql = "select cast(o.id as varchar) id, o.projectcode projectCode, o.projectname projectName, o.createEmployee from ProjectInfo o where o.isDelete = 0";
+        final String sql = "select cast(o.id as varchar) id, o.projectcode projectCode, o.projectname projectName, o.createEmployee, pe.subProjectName, pe.industryTypeName, pe.disciplineTypeName" +
+                " from ProjectInfo o left join ProjectExt pe on o.id = pe.projectId where o.isDelete = 0";
         List<ProjectInfo> projectInfos = this.sqlDao.listByAliasToBean(ProjectInfo.class, sql, page, rows);
         return projectInfos;
     }
@@ -162,7 +167,7 @@ public class ProjectService {
     }
 
     public List<WbsTemplate> listWbsTemplateDetail(String industryType, String disciplineType) {
-        List<WbsTemplate> roots = new ArrayList<>();
+        /*List<WbsTemplate> roots = new ArrayList<>();
 
         WbsTemplate root = new WbsTemplate();
         root.setName("根1");
@@ -190,7 +195,44 @@ public class ProjectService {
         stem3.setCode("121");
         stem3.setPid(12);
         roots.add(stem3);
-        return roots;
+        return roots;*/
+
+        StringBuilder sb = new StringBuilder();
+        try {
+            InputStreamReader sr = new InputStreamReader(new FileInputStream("d:/esitmate.json"), Charset.forName("utf-8"));
+            //可以换成工程目录下的其他文本文件
+            BufferedReader br = new BufferedReader(sr);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            br.close();
+            sr.close();
+        } catch(Exception e) {
+            sb.append("[]");
+        }
+
+        List<WbsTemplate> wtList = JSONArray.parseArray(sb.toString(), WbsTemplate.class);
+
+        Collections.sort(wtList, new Comparator<WbsTemplate>() {
+            @Override
+            public int compare(WbsTemplate o1, WbsTemplate o2) {
+                Integer j = sort(o1.getNodeDepth(), o2.getNodeDepth());
+                if (0 == j.intValue()) return sort(o1.getBrotherOrderNo(), o2.getBrotherOrderNo());
+                else return j;
+            }
+        });
+        return wtList;
+    }
+
+    private Integer sort(Integer i, Integer j) {
+        if (null == i && null != j) {
+            return 1;
+        } else if (null == i && null != j) {
+            return -1;
+        } else {
+            return i - j;
+        }
     }
 
     public List<WbsTemplate> listWbsTemplateDetail(String projectId) {
@@ -213,16 +255,16 @@ public class ProjectService {
     }
 
 
-    public List<ProjectStructure> listProjectStructureByProjectId(String projectId) {
-        String sql = "select id, nodeName, nodeCode, projectInfo_id projectInfoId, parentid parentId from ProjectStructure where projectInfo_id = ?";
-        List<ProjectStructure> ps = this.sqlDao.listByAliasToBean(ProjectStructure.class, sql, new Object[]{projectId});
+    public List<ProjectStructure> listProjectStructureByProjectId(Integer projectId, Integer phaseId) {
+        String sql = "select ps.id, ps.nodeName, ps.nodeCode, ps.projectInfo_id projectInfoId, ps.parentid parentId, pse.estimateTemplateId from ProjectStructure ps" +
+                " left join ProjectStructureExt pse on ps.id = pse.projectStructureId where ps.projectInfo_id = ? and ps.phaseIds like ?";
+        List<ProjectStructure> ps = this.sqlDao.listByAliasToBean(ProjectStructure.class, sql, new Object[]{projectId, "%," + phaseId + ",%"});
         return ps;
     }
 
     private WbsTemplateDetailRelate getWbsTemplateDetailRelate(String projectStructureId) {
         return this.sqlDao.getByAliasToBean(WbsTemplateDetailRelate.class, "select * from WbsTemplateDetailRelate where projectStructureId = ?", new Object[]{projectStructureId});
     }
-
 
     public WbsTemplateDetailRelate saveWbsTemplateDetailRelate(String projectStructureId, WbsTemplateDetailRelate dr) {
         WbsTemplateDetailRelate wtdr = getWbsTemplateDetailRelate(projectStructureId);
@@ -232,5 +274,146 @@ public class ProjectService {
             this.sqlDao.execUpdate("insert into WbsTemplateDetailRelate(wbsTemplateDetailId, projectStructureId) values (?, ?)", new Object[]{dr.getWbsTemplateDetailId(), dr.getProjectStructureId()});
         }
         return getWbsTemplateDetailRelate(projectStructureId);
+    }
+
+    @Resource
+    private WsService wsService;
+
+    @Transactional
+    public void relateSubProjectAndIndustryTypeName(String projectId, Integer subProjectId, String disciplineType, String industryType) {
+        ProjectExt pe = getProjectExt(Integer.parseInt(projectId));
+        String subProjectName = wsService.getSubProjectName(subProjectId);
+        String[] typeNames = wsService.getSubProjectTypeName(industryType, disciplineType);
+
+        if (null == pe) {
+            String insertSql = "insert into ProjectExt(subProjectId, subProjectName, industryType, disciplineType, industryTypeName, disciplineTypeName, projectId) values (?, ?, ?, ?, ?, ?, ?)";
+            sqlDao.execUpdate(insertSql, new Object[]{subProjectId, subProjectName, industryType, disciplineType, typeNames[0], typeNames[1], projectId});
+        } else {
+            String updateSql = "update ProjectExt set subProjectId = ?, subProjectName = ?, industryType = ?, disciplineType = ?, industryTypeName = ?, disciplineTypeName = ? where projectId = ?";
+            sqlDao.execUpdate(updateSql, new Object[]{subProjectId, subProjectName, industryType, disciplineType, typeNames[0], typeNames[1], projectId});
+        }
+    }
+
+    public Integer getEstimatePhaseId(Integer projectId) {
+        String sql = "select id from ProjectPhase where projectInfo_id = ? and name like '%概算%'";
+        return sqlDao.getAutoCast(sql, new Object[]{projectId});
+    }
+
+    private int updateProjectStructureExt(Integer projectStructureId, Integer estimateTemplateId) {
+        String sql = "update ProjectStructureExt set estimateTemplateId = ? where projectStructureId = ?";
+        return this.sqlDao.execUpdate(sql, new Object[]{estimateTemplateId, projectStructureId});
+    }
+
+    private int insertProjectStructureExt(Integer projectStructureId, Integer estimateTemplateId) {
+        String sql = "insert into ProjectStructureExt(estimateTemplateId, projectStructureId) values (?, ?)";
+        return this.sqlDao.execUpdate(sql, new Object[]{estimateTemplateId, projectStructureId});
+    }
+
+    /**
+     * 设置全过程管理系统和三算系统的关联关系
+     * @param projectStructureIds
+     * @param estimateTemplateId
+     * @return
+     */
+    @Transactional
+    public List<ProjectStructureExt> setWbsTemplateDetailRelate(Integer[] projectStructureIds, Integer estimateTemplateId) {
+        List<ProjectStructureExt> psExtList = new ArrayList<>(projectStructureIds.length);
+        for (Integer psId : projectStructureIds) {
+            int updateCount = updateProjectStructureExt(psId, estimateTemplateId);
+            if (0 == updateCount) {
+                updateCount = insertProjectStructureExt(psId, estimateTemplateId);
+            }
+            if (0 == updateCount) {
+                throw new IllegalStateException();
+            }
+            psExtList.add(new ProjectStructureExt(psId, estimateTemplateId));
+        }
+        return psExtList;
+    }
+
+    private List<EstimateDetail> listCustomEstimateDetail(Integer phaseId, Integer wbsTemplateDetailId) {
+        String sql = "select ('2_' + cast(ps.id as varchar)) id, ps.nodename name, pspm.scaleValue amount\n" +
+                ", ps.scaleUnit unit, ps.professionaltype spec \n" +
+                ", pspm.compMoney1 civilEcost, pspm.compMoney3 equipmentEcost, pspm.compMoney4 installEcost, (pspm.compMoney2 - pspm.compMoney3 - pspm.compMoney4) feeEcost, pspm.compMoney8 otherEcost\n" +
+                " from ProjectStructureExt pse inner join ProjectStructure ps on pse.projectStructureId = ps.id\n" +
+                " inner join ProjectStructurePhaseMoney pspm on pspm.projectphase_id = ? and pspm.projectstructure_id = ps.id where pse.estimateTemplateId = ?";
+        return this.sqlDao.listByAliasToBean(EstimateDetail.class, sql, new Object[]{phaseId, wbsTemplateDetailId});
+    }
+
+    public List<EstimateDetail> listWbsTemplateDetailWithSum(String projectId) {
+
+        List<EstimateDetail> rs = new ArrayList<>();
+        Integer phaseId = this.getEstimatePhaseId(Integer.parseInt(projectId));
+        String isPrefix = "1_";
+
+        Map<String, EstimateDetail> map = new ConcurrentHashMap<>();
+        List<WbsTemplate> list = listWbsTemplateDetail(projectId);
+        for (WbsTemplate wbsTemplate : list) {
+            EstimateDetail vo = new EstimateDetail();
+            vo.setId(isPrefix + wbsTemplate.getId());
+            vo.setName(wbsTemplate.getName());
+
+            EstimateDetail parent = null;
+            if (null != wbsTemplate.getPid() && 0 < wbsTemplate.getPid()) {
+                vo.setPid(isPrefix + wbsTemplate.getPid());
+                parent = map.get(vo.getPid());
+            }
+            vo.setLeafFlag("0");
+
+            if (null != parent) {
+                vo.setNodePathId(parent.getNodePathId() + "/" + vo.getId());
+                vo.setNodePath(parent.getNodePath() + "->" + vo.getName());
+                vo.setNodeDepth(parent.getNodeDepth() + 1);
+            } else {
+                vo.setNodePathId("/" + vo.getId());
+                vo.setNodePath(vo.getName());
+                vo.setNodeDepth(1);
+            }
+
+            rs.add(vo);
+
+            map.put(vo.getId(), vo);
+
+            if ("true".equals(wbsTemplate.getLeaf()) || "1".equals(wbsTemplate.getLeaf())) {
+                List<EstimateDetail> leafs = this.listCustomEstimateDetail(phaseId, wbsTemplate.getId());
+                if (0 < leafs.size()) {
+                    EstimateDetail leafEstimateSum = new EstimateDetail();
+                    for (EstimateDetail leaf : leafs) {
+                        leaf.setPid(vo.getId());
+                        leaf.setLeafFlag("1");
+                        leaf.setNodePath(vo.getNodePath() + "/" + leaf.getId());
+                        leaf.setNodePathId(vo.getNodePathId() + "->" + leaf.getName());
+                        leaf.setNodeDepth(vo.getNodeDepth() + 1);
+
+                        leafEstimateSum.setCivilEcost(leafEstimateSum.getCivilEcost() + leaf.getCivilEcost());
+                        leafEstimateSum.setEquipmentEcost(leafEstimateSum.getEquipmentEcost() + leaf.getEquipmentEcost());
+                        leafEstimateSum.setInstallEcost(leafEstimateSum.getInstallEcost() + leaf.getInstallEcost());
+                        leafEstimateSum.setFeeEcost(leafEstimateSum.getFeeEcost() + leaf.getFeeEcost());
+                        leafEstimateSum.setOtherEcost(leafEstimateSum.getOtherEcost() + leaf.getOtherEcost());
+                    }
+
+                    EstimateDetail p = vo;
+                    while(null != p) {
+                        p.setCivilEcost(p.getCivilEcost() + leafEstimateSum.getCivilEcost());
+                        p.setEquipmentEcost(p.getEquipmentEcost() + leafEstimateSum.getEquipmentEcost());
+                        p.setInstallEcost(p.getInstallEcost() + leafEstimateSum.getInstallEcost());
+                        p.setFeeEcost(p.getFeeEcost() + leafEstimateSum.getFeeEcost());
+                        p.setOtherEcost(p.getOtherEcost() + leafEstimateSum.getOtherEcost());
+                        if (null != p.getPid()) {
+                            p = map.get(p.getPid());
+                        } else {
+                            p = null;
+                        }
+                    }
+                    rs.addAll(leafs);
+                }
+            }
+        }
+        return rs;
+    }
+
+    public ProjectExt getProjectExt(Integer projectId) {
+        String sql = "select * from ProjectExt where projectId = ?";
+        return this.sqlDao.getByAliasToBean(ProjectExt.class, sql, new Object[]{projectId});
     }
 }

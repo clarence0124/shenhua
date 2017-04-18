@@ -1,4 +1,4 @@
-package test;
+package com.itspub.demo.ws;
 
 import com.itspub.demo.ws.DemoWebService;
 import com.itspub.demo.ws.IDemoWebService;
@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 /**
  * Created by Administrator on 2016/12/7.
  */
-public class UserHelloWorldTest {
+public class TestRun {
 
     public static void main(String[] args) {
         QName SERVICE_NAME = new QName("http://ws.demo.itspub.com/", "DemoWebService");

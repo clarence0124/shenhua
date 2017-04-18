@@ -1,5 +1,6 @@
 package com.wsc;
 
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -17,6 +18,9 @@ public class ProjectStructure {
 
     private String state = "open";
     private String tempId;
+
+    @Transient
+    private Integer estimateTemplateId;
 
     public Integer getId() {
         return id;
@@ -80,5 +84,13 @@ public class ProjectStructure {
 
     public void setTempId(String tempId) {
         this.tempId = tempId;
+    }
+
+    public Integer getEstimateTemplateId() {
+        return estimateTemplateId;
+    }
+
+    public void setEstimateTemplateId(Integer estimateTemplateId) {
+        this.estimateTemplateId = estimateTemplateId;
     }
 }

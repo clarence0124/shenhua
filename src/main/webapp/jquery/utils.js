@@ -54,3 +54,40 @@ var showConfirm = function(title, msg, fn1, fn2) {
         }
     }
 }
+
+/**
+ * 金额格式化方法，显示两位小数并带千位分隔符
+ */
+function numberFormat(value) {
+    var symbol = '';
+    if (-1 != value.indexOf('-')) {
+        symbol = '-';
+        value = value.substring(1, value.length);
+    }
+    var ps = value.split(".");
+    var prefixLen = ps[0].length%3;
+    var prefix = ps[0].substring(0, prefixLen);
+    for (var i = 0; i < parseInt(ps[0].length/3); i++) {
+        if ('' != prefix) prefix += ',';
+        prefix += ps[0].substring(prefixLen, prefixLen+3);
+        prefixLen += 3;
+    }
+    return symbol + prefix + (1 < ps.length ? ("." + ps[1]) : "");
+}
+
+/**
+ * easyui单元格格式化，金额显示两位小数并带千位分隔符
+ */
+function easyuiMoneyFormatter(value, row, index) {
+    if (null == value || ('' == value && 0 != value)) {
+        return '';
+    }
+    if (0 == value) return '0.00';
+    if (!isNaN(value)) {
+        value = parseFloat(value).toFixed(2);
+        if (-1 == value.indexOf(',')) {
+            return numberFormat(value);
+        }
+    }
+    return '0.00';
+}

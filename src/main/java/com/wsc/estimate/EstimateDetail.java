@@ -17,20 +17,20 @@ public class EstimateDetail {
     private Double amount;
     private String unit;
     private String leafFlag;
-    private Double nodeDepth;
+    private Integer nodeDepth;
     private String nodePath;
     private String nodePathId;
 
-    private Double indictaor;
-    private Double mineEcost;
-    private Double civilEcost;
-    private Double equipmentEcost;
-    private Double installEcost;
-    private Double materialCost;
-    private Double installCost;
-    private Double emiSum;
-    private Double feeEcost;
-    private Double otherEcost;
+    private Double indictaor = 0d;
+    private Double mineEcost = 0d;
+    private Double civilEcost = 0d;
+    private Double equipmentEcost = 0d;
+    private Double installEcost = 0d;
+    private Double materialCost = 0d;
+    private Double installCost = 0d;
+    private Double emiSum = 0d;
+    private Double feeEcost = 0d;
+    private Double otherEcost = 0d;
     private String subitemName;
     private String subItemTempId;
     private String subItemId;
@@ -139,11 +139,11 @@ public class EstimateDetail {
         this.leafFlag = leafFlag;
     }
 
-    public Double getNodeDepth() {
+    public Integer getNodeDepth() {
         return nodeDepth;
     }
 
-    public void setNodeDepth(Double nodeDepth) {
+    public void setNodeDepth(Integer nodeDepth) {
         this.nodeDepth = nodeDepth;
     }
 

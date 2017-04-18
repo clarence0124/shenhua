@@ -7,6 +7,8 @@ import java.util.*
  */
 object StringUtils {
 
+
+
     private fun getLetterAndNumberArray(): Array<Char?> {
         var arrayOfNulls = kotlin.arrayOfNulls<Char>(36)
         for (i in IntRange(0, 9)) {
@@ -16,6 +18,11 @@ object StringUtils {
             arrayOfNulls[j] = (j + 87).toChar()
         }
         return arrayOfNulls
+    }
+
+    @JvmStatic
+    fun hasText(str: String?): Boolean {
+        return (null != str && 0 < str.trim().length)
     }
 
     @JvmStatic
@@ -33,6 +40,7 @@ object StringUtils {
         return if (notNull(str) == "") candidate else str
     }
 
+    @JvmStatic
     fun randomLetterAndNumber(len: Int): String {
         val array = getLetterAndNumberArray()
         val r = Random()

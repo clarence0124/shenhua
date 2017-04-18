@@ -2,22 +2,23 @@ package com.wsc;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wsc.budget.BudgetVo;
+import com.itspub.util.StringUtils;
+import com.wsc.entity.ProjectExt;
+import com.wsc.estimate.EstimateDetail;
+import com.wsc.estimate.EstimateDetailWrapper;
+import com.wsc.estimate.EstimateListWrapper;
+import com.wsc.export.budget.BudgetVo;
+import com.wsc.entity.ProjectStructureExt;
 import com.wsc.estimate.EstimateVo;
 import com.wsc.wbsTemplate.WbsTemplate;
 import com.wsc.wbsTemplate.WbsTemplateCategory;
-import com.wsc.wbsTemplate.WbsTemplateDetailRelate;
 import com.wsc.wbsTemplate.WbsTemplateRelate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class ProjectController {
 
     @Resource
     private ProjectService projectService;
+
+    @Resource
+    private WsService wsService;
 
     private Map success(String msg) {
         Map<String, Object> map = new HashMap<>();
@@ -82,23 +86,6 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "{projectId}/projectStructurePage")
-    public String projectStructurePage(@PathVariable Integer projectId, Model model) {
-        model.addAttribute("projectId", projectId);
-        return "projectStructure";
-    }
-
-    /*@ResponseBody
-    @RequestMapping(value = "{projectId}/projectStructure")
-    public String projectStructure(@PathVariable Integer projectId) {
-        Map<String, Object> result = new HashMap<>();
-        ProjectStructure root = this.projectService.getRootProjectStructureByProjectId(projectId, true);
-        List<ProjectStructure> roots = new ArrayList<>();
-        roots.add(root);
-        result.put("rows", roots);
-        return JSONObject.toJSONString(result);
-    }
-*/
     @ResponseBody
     @RequestMapping(value = "wbsTemplate")
     public String wbsTemplate() {
@@ -135,8 +122,9 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/{projectId}/relateTemplatePage", method = RequestMethod.GET)
-    public String relateTemplatePage(@PathVariable String projectId, Model model) {
+    public String relateTemplatePage(@PathVariable String projectId, String industryTypeName, Model model) {
         model.addAttribute("projectId", projectId);
+        model.addAttribute("industryTypeName", industryTypeName);
         return "relateTemplatePage";
     }
 
@@ -146,10 +134,31 @@ public class ProjectController {
         return "relateTemplateDetailPage";
     }
 
+    /**
+     * 关联子项目的窗口
+     * @param projectId
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/{projectId}/relateSubProjectPage", method = RequestMethod.GET)
+    public String relateSubProjectPage(@PathVariable String projectId, Model model) {
+        model.addAttribute("projectId", projectId);
+        return "relateSubProjectPage";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{projectId}/relateSubProjectAndIndustryTypeName", method = RequestMethod.POST)
+    public String relateSubProjectAndIndustryTypeName(@PathVariable String projectId, Integer subProjectId, String disciplineType, String industryType) {
+        projectService.relateSubProjectAndIndustryTypeName(projectId, subProjectId, disciplineType, industryType);
+        Map result = this.success("操作成功");
+        return JSONObject.toJSONString(result);
+    }
+
     @ResponseBody
     @RequestMapping(value = "{projectId}/projectStructure")
-    public String projectStructure(@PathVariable String projectId) {
-        List<ProjectStructure> templates = this.projectService.listProjectStructureByProjectId(projectId);
+    public String projectStructure(@PathVariable Integer projectId) {
+        Integer phaseId = this.projectService.getEstimatePhaseId(projectId);
+        List<ProjectStructure> templates = this.projectService.listProjectStructureByProjectId(projectId, phaseId);
         Map<String, Object> map = new HashMap<>();
         map.put("rows", templates);
         return JSONObject.toJSONString(map);
@@ -164,11 +173,17 @@ public class ProjectController {
         return JSONObject.toJSONString(map);
     }
 
+    /**
+     * 工程结构关联
+     * @param projectStructureIds
+     * @param estimateTemplateId
+     * @return
+     */
     @ResponseBody
-    @RequestMapping(value = "/{projectStructureId}/wbsTemplateDetailRelate", method = RequestMethod.PUT)
-    public String wbsTemplateDetailRelate(@PathVariable String projectStructureId, WbsTemplateDetailRelate dr) {
+    @RequestMapping(value = "/wbsTemplateDetailRelate", method = RequestMethod.PUT)
+    public String wbsTemplateDetailRelate(@RequestParam(value = "projectStructureIds[]") Integer[] projectStructureIds, Integer estimateTemplateId) {
         try {
-            WbsTemplateDetailRelate wtdr = this.projectService.saveWbsTemplateDetailRelate(projectStructureId, dr);
+            List<ProjectStructureExt> wtdr = this.projectService.setWbsTemplateDetailRelate(projectStructureIds, estimateTemplateId);
             Map result = this.success("关联成功");
             result.put("wtdr", wtdr);
             return JSONObject.toJSONString(result);
@@ -176,5 +191,66 @@ public class ProjectController {
             e.printStackTrace();
             return JSONObject.toJSONString(this.fail("关联失败：" + e.getMessage()));
         }
+    }
+
+    /**
+     * 导出页面
+     * @param projectId
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "{projectId}/exportPage")
+    public String exportPage(@PathVariable String projectId, Model model) {
+        model.addAttribute("projectId", projectId);
+        return "exportPage";
+    }
+
+    /**
+     * 列出模板明细，带金额汇总
+     * @param projectId
+     * @return
+     * @throws IOException
+     */
+    @ResponseBody
+    @RequestMapping(value = "{projectId}/wbsTemplateDetailWithSum")
+    public String wbsTemplateDetailWithSum(@PathVariable String projectId) throws IOException {
+        List<EstimateDetail> templates = this.projectService.listWbsTemplateDetailWithSum(projectId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("rows", templates);
+        return JSONObject.toJSONString(map);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "{projectId}/exportResult")
+    public String exportResult(@PathVariable String projectId) throws IOException {
+        List<EstimateDetail> details = this.projectService.listWbsTemplateDetailWithSum(projectId);
+        EstimateVo vo = new EstimateVo();
+        EstimateListWrapper wrapper = new EstimateListWrapper();
+
+        ProjectExt pe = projectService.getProjectExt(Integer.parseInt(projectId));
+        Integer subProjectId = pe.getSubProjectId();
+
+        String estimateId = StringUtils.randomLetterAndNumber(16);
+        wrapper.setId(estimateId);
+        wrapper.setSubprojId(subProjectId);
+        for (EstimateDetail template : details) {
+            if (null == template.getPid()) {
+                wrapper.setCivilSum(wrapper.getCivilSum() + template.getCivilEcost());
+                wrapper.setEquipmentSum(wrapper.getEquipmentSum() + template.getEquipmentEcost());
+                wrapper.setInstallSum(wrapper.getInstallSum() + template.getInstallEcost());
+                wrapper.setFeeSum(wrapper.getFeeSum() + template.getFeeEcost());
+                wrapper.setOtherSum(wrapper.getOtherSum() + template.getOtherEcost());
+            }
+            template.setEstimateId(estimateId);
+        }
+        wrapper.setTotalSum(wrapper.getCivilSum() + wrapper.getEquipmentSum() + wrapper.getInstallSum() + wrapper.getFeeSum() + wrapper.getOtherSum());
+
+        EstimateDetailWrapper detailWrapper = new EstimateDetailWrapper();
+        detailWrapper.setDetails(details);
+        wrapper.setEstimateDetail(detailWrapper);
+
+        vo.setEstimateList(wrapper);
+
+        return JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
     }
 }
