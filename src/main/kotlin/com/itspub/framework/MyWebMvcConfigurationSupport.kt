@@ -6,9 +6,12 @@ import com.itspub.framework.interceptor.AllInterceptor
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.FilterType
 import org.springframework.format.support.FormattingConversionService
 import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.stereotype.Controller
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
@@ -20,7 +23,7 @@ import java.util.*
  * Created by Administrator on 2017/1/16.
  */
 @EnableWebMvc
-//@ComponentScan(basePackages = arrayOf("com"))
+@ComponentScan(basePackages = arrayOf("com"), useDefaultFilters = false, includeFilters = arrayOf(ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller::class)))
 @Configuration
 open class MyWebMvcConfigurationSupport : WebMvcConfigurationSupport(), ApplicationContextAware {
 
@@ -30,6 +33,9 @@ open class MyWebMvcConfigurationSupport : WebMvcConfigurationSupport(), Applicat
         this.applicationContext = applicationContext
     }
 
+    /**
+     * RequestMappingHandler
+     */
     @Bean
     override fun requestMappingHandlerAdapter(): RequestMappingHandlerAdapter {
         var defaultAdapter = super.requestMappingHandlerAdapter()
@@ -41,6 +47,9 @@ open class MyWebMvcConfigurationSupport : WebMvcConfigurationSupport(), Applicat
         defaultAdapter.customArgumentResolvers = argumentResolvers
         */
 
+        /**
+         * support JsonResponse as return type
+         */
         val returnValueHandlers = ArrayList<HandlerMethodReturnValueHandler>()
         returnValueHandlers.add(JsonMessageConverter())
         defaultAdapter.customReturnValueHandlers = returnValueHandlers

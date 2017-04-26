@@ -8,7 +8,7 @@ public class EstimateDetail {
     private String pid;
     private String estimateId;
     private Integer brotherOrderNo;
-    private Integer tempNodeId;
+    private String tempNodeId;
     private String tempNodeName;
     private String outlineNo;
     private String name;
@@ -67,11 +67,11 @@ public class EstimateDetail {
         this.brotherOrderNo = brotherOrderNo;
     }
 
-    public Integer getTempNodeId() {
+    public String getTempNodeId() {
         return tempNodeId;
     }
 
-    public void setTempNodeId(Integer tempNodeId) {
+    public void setTempNodeId(String tempNodeId) {
         this.tempNodeId = tempNodeId;
     }
 

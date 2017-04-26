@@ -1,13 +1,19 @@
 package com.wsc;
 
 import com.alibaba.fastjson.JSONArray;
+import com.itspub.util.StringUtils;
 import com.shinfo.ecm.ebs.webService.WbsTemplateServiceImpl;
 import com.shinfo.ecm.ebs.webService.WbsTemplateServiceImplService;
 import com.wsc.subProject.SubProject;
 import com.wsc.wbsTemplate.WbsTemplateCategory;
 import org.springframework.stereotype.Service;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,7 +26,7 @@ public class WsService {
 
     public String getSubProjectList(String projName) {
 
-        List<SubProject> list = new ArrayList<>();
+        /*List<SubProject> list = new ArrayList<>();
         SubProject s1 = new SubProject();
         s1.setId(1);
         s1.setProjectName("神华煤炭工程");
@@ -35,13 +41,13 @@ public class WsService {
         s2.setIndustryTypeName("分类2");
         list.add(s2);
 
-        return JSONArray.toJSONString(list);
-        /*String subProjectList = wbsTemplateService.getSubProjectList(projName);
-        return subProjectList;*/
+        return JSONArray.toJSONString(list);*/
+        String subProjectList = wbsTemplateService.getSubProjectList(projName);
+        return !"".equals(subProjectList) ? subProjectList : "[]";
     }
 
-    public String getWbsTemplateList() {
-        List<WbsTemplateCategory> categories = new ArrayList<>();
+    public String getWbsTemplateList(String industryTypeName) {
+        /*List<WbsTemplateCategory> categories = new ArrayList<>();
         WbsTemplateCategory c1 = new WbsTemplateCategory();
         c1.setIndustryType("1");
         c1.setIndustryTypeName("板块大类名称1");
@@ -56,9 +62,22 @@ public class WsService {
 
         categories.add(c1);
         categories.add(c2);
-        return JSONArray.toJSONString(categories);
+        return JSONArray.toJSONString(categories);*/
 
-        // return wbsTemplateService.getWbsTemplateList();
+        String str = wbsTemplateService.getWbsTemplateList();
+        if (!StringUtils.hasText(str)) return "[]";
+
+        List<WbsTemplateCategory> wbsList = JSONArray.parseArray(str, WbsTemplateCategory.class);
+        if (StringUtils.hasText(industryTypeName)) {
+            Iterator<WbsTemplateCategory> iterator = wbsList.iterator();
+            while(iterator.hasNext()) {
+                String curIndustryTypeName = iterator.next().getIndustryTypeName();
+                if (null == curIndustryTypeName || !curIndustryTypeName.equals(industryTypeName)) {
+                    iterator.remove();
+                }
+            }
+        }
+        return JSONArray.toJSONString(wbsList);
     }
 
     public String getSubProjectName(Integer subProjectId) {
@@ -73,7 +92,7 @@ public class WsService {
     }
 
     public String[] getSubProjectTypeName(String industryType, String disciplineType) {
-        String wbsTemplateList = this.getWbsTemplateList();
+        String wbsTemplateList = this.getWbsTemplateList(null);
         List<WbsTemplateCategory> categories = JSONArray.parseArray(wbsTemplateList, WbsTemplateCategory.class);
         for (WbsTemplateCategory category : categories) {
             if (category.getIndustryType().equals(industryType) && category.getDisciplineType().equals(disciplineType)) {
@@ -81,5 +100,46 @@ public class WsService {
             }
         }
         return new String[0];
+    }
+
+    public String getWbsTemplateNodesByIndustryTypeAndDisciplineType(String industryType, String disciplineType) {
+        String str = wbsTemplateService.getWbsTemplateNodesByIndustryTypeAndDisciplineType(industryType, disciplineType);
+        return (!StringUtils.hasText(str)) ? "[]" : str;
+    }
+
+    /**
+     * 6.1.4	导入概算数据接口
+     * @param estimateList
+     * 要导入到三算系统的概算数据，json数据字符串
+     * @param subProjectId
+     * 三算系统子项目id
+     * @throws DatatypeConfigurationException
+     */
+    public void importWSExtimateDetails(String estimateList, String subProjectId) throws DatatypeConfigurationException {
+        GregorianCalendar gcal = new GregorianCalendar();
+        XMLGregorianCalendar xgcal= DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+
+        int totalLen = estimateList.length();
+        int perLen = 1024 * 250; // 每次发送内容不得超过500K
+
+        // 分块调用webservice接口传送模板数据
+        {
+            int less = totalLen % perLen;
+            int blockSize = (totalLen / perLen) + (0 < less ? 1 : 0);
+            for (int i = 0; i < blockSize; i++) {
+                int sortNum = i+1;
+                int start = i * perLen;
+
+                if (i != blockSize - 1) {
+                    String content = estimateList.substring(start, start + perLen);
+                    wbsTemplateService.importWSExtimateDetails(content, subProjectId, xgcal, "1", sortNum, "0");
+                } else {
+                    String content = estimateList.substring(start, start + ((0 < less) ? less : perLen));
+                    wbsTemplateService.importWSExtimateDetails(content, subProjectId, xgcal, "1", sortNum, "1");
+                }
+            }
+        }
+
+        // wbsTemplateService.importWSExtimateDetails(estimateList, subProjectId, xgcal, 1);
     }
 }

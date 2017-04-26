@@ -26,6 +26,10 @@
 </head>
 <body class="easyui-layout" fit="true">
 
+    <div id="queryBar">
+        项目名称：<input type="text" name="projName" id="projName" />
+    </div>
+
     <div data-options="region:'center'" title="集团三算管理系统的子项目列表">
         <table id="datagrid" class="easyui-datagrid"  fit="true"
                data-options="method: 'get',
@@ -33,6 +37,8 @@
 						fitColumns:false,
 						singleSelect: 'true',
 						idField:'id',
+						rownumbers: true,
+						toolbar: '#queryBar',
 						url: '${contextPath}wsc/getSubProjectList'">
             <thead>
             <tr >
@@ -40,21 +46,23 @@
                 <th data-options="field:'subProjName', halign:'center', align:'left'" width="350">子项目名称</th>
                 <th data-options="field:'projectName', halign:'center', align:'left'" width="350">主项目名称</th>
                 <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
-                <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
             </tr>
             </thead>
         </table>
     </div>
 
     <script>
-
-        function datagridOnSelect(index, row) {
-            $('#treegrid').treegrid('options').queryParams = {
-                industryType: row.industryType
-                , disciplineType: row.disciplineType
+        $('#projName').on('keypress', function(ev) {
+            if (ev.keyCode == 13) {
+                $('#datagrid').datagrid({
+                    queryParams: {
+                        projName: $.trim($(this).val())
+                    }
+                }).datagrid('clearSelections');
+                return false;
             }
-            $('#treegrid').treegrid('reload')
-        }
+            ev.stopPropagation()
+        })
     </script>
 </body>
 </html>

@@ -26,7 +26,7 @@
 </head>
 <body class="easyui-layout" fit="true">
 
-    <div data-options="region:'center'" title="WBS概算模板明细">
+    <div data-options="region:'center'" title="集团三算管理系统的概算模板明细">
         <table id="treegrid" class="easyui-treegrid"  fit="true"
                data-options="method: 'get',
 						nowrap:true,
@@ -34,7 +34,7 @@
 						singleSelect: 'true',
 						idField:'id',
                         treeField:'name',
-						url: '${contextPath}project/wbsTemplateDetail', loadFilter: treegridLoadFilter ">
+						url: '${contextPath}wsc/getWbsTemplateNodesByIndustryTypeAndDisciplineType', loadFilter: treegridLoadFilter ">
             <thead>
             <tr >
                 <%--<th data-options="field:'id',checkbox:true" width="30"></th>--%>
@@ -46,13 +46,13 @@
 
     </div>
 
-    <div data-options="region:'west'" style="width:500px" title="集团三算管理系统中的板块分类">
+    <div data-options="region:'west'" style="width:500px" title="集团三算管理系统的板块分类">
         <table id="datagrid" class="easyui-datagrid"  fit="true"
                data-options="method: 'get',
 						nowrap:true,
 						fitColumns:false,
 						singleSelect: 'true',
-						url: '${contextPath}project/wbsTemplate?industryTypeName=${industryTypeName}', onSelect: datagridOnSelect ">
+						url: '${contextPath}wsc/getWbsTemplateList?industryTypeName=${industryTypeName}', onSelect: datagridOnSelect ">
             <thead>
             <tr >
                 <th data-options="field:'tempId', checkbox:'true'">板块小类</th>

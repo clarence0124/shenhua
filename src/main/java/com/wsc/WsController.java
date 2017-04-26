@@ -22,5 +22,19 @@ public class WsController {
         return "{\"rows\":" + wsService.getSubProjectList(projName) + "}";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "getWbsTemplateList")
+    public String getWbsTemplateList(String industryTypeName) {
+        return "{\"rows\":" + wsService.getWbsTemplateList(industryTypeName) + "}";
+    }
 
+    @ResponseBody
+    @RequestMapping(value = "getWbsTemplateNodesByIndustryTypeAndDisciplineType")
+    public String getWbsTemplateNodesByIndustryTypeAndDisciplineType(String industryType, String disciplineType) {
+        try {
+            return "{\"rows\":" + wsService.getWbsTemplateNodesByIndustryTypeAndDisciplineType(industryType, disciplineType) + "}";
+        } catch (Exception e) {
+            return "{\"rows\":[]}";
+        }
+    }
 }

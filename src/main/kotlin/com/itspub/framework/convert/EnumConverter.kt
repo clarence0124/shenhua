@@ -13,20 +13,12 @@ class EnumConverter<T : java.lang.Enum<*>>(private val enumType: Class<T>) : org
         if ("" == strVal)
             return null
         else if (null != annotation && annotation.value === EnumType.STRING) {
-            pt.enumConstants.forEach {
-                if (it.toString().equals(strVal)) {
-                    return it
-                }
-            }
-            throw IllegalStateException("not found string " + strVal)
+            val filter = pt.enumConstants.filter { it.toString().equals(strVal) }
+            return if (0 < filter.size) filter[0] else IllegalStateException("not found string " + strVal)
         } else {
             val ordinal = Integer.valueOf(strVal)!!.toInt()
-            pt.enumConstants.forEach {
-                if (it.ordinal() == ordinal) {
-                    return it
-                }
-            }
-            throw IllegalStateException("not found ordinal " + ordinal)
+            val filter = pt.enumConstants.filter { it.ordinal() == ordinal }
+            return if (0 < filter.size) filter[0] else IllegalStateException("not found ordinal " + ordinal)
         }
     }
 

@@ -104,7 +104,6 @@
                                                 if (!category) {
                                                     return top.showAlert("请选择一个模板记录进行关联操作");
                                                 } else {
-                                                    console.log(category)
                                                     $.post('${contextPath}project/' + project.id + '/relateSubProjectAndIndustryTypeName', {'subProjectId': subProject.id, 'disciplineType': category.disciplineType, 'industryType': category.industryType}, function (r) {
 
                                                         top.showAlert(r.msg, function() {

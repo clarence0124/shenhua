@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -95,32 +96,6 @@ public class ProjectController {
         return JSONObject.toJSONString(map);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "wbsTemplateDetail")
-    public String wbsTemplateDetail(String industryType, String disciplineType) {
-        if (!StringUtils.hasText(industryType) || !StringUtils.hasText(disciplineType)) {
-            return "{\"rows\": []}";
-        }
-        List<WbsTemplate> templates = this.projectService.listWbsTemplateDetail(industryType, disciplineType);
-        Map<String, Object> map = new HashMap<>();
-        map.put("rows", templates);
-        return JSONObject.toJSONString(map);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "{projectId}/wbsTemplateRelate", method = RequestMethod.PUT)
-    public String saveWbsTemplateRelate(@PathVariable String projectId, WbsTemplateRelate r) {
-        try {
-            WbsTemplateRelate wbsTemplateRelate = this.projectService.saveWbsTemplateRelate(projectId, r);
-            Map result = this.success("关联成功");
-            result.put("wbsTemplateRelate", wbsTemplateRelate);
-            return JSONObject.toJSONString(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JSONObject.toJSONString(this.fail("关联失败：" + e.getMessage()));
-        }
-    }
-
     @RequestMapping(value = "/{projectId}/relateTemplatePage", method = RequestMethod.GET)
     public String relateTemplatePage(@PathVariable String projectId, String industryTypeName, Model model) {
         model.addAttribute("projectId", projectId);
@@ -159,15 +134,6 @@ public class ProjectController {
     public String projectStructure(@PathVariable Integer projectId) {
         Integer phaseId = this.projectService.getEstimatePhaseId(projectId);
         List<ProjectStructure> templates = this.projectService.listProjectStructureByProjectId(projectId, phaseId);
-        Map<String, Object> map = new HashMap<>();
-        map.put("rows", templates);
-        return JSONObject.toJSONString(map);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "{projectId}/wbsTemplateDetail")
-    public String wbsTemplateDetail(@PathVariable String projectId) {
-        List<WbsTemplate> templates = this.projectService.listWbsTemplateDetail(projectId);
         Map<String, Object> map = new HashMap<>();
         map.put("rows", templates);
         return JSONObject.toJSONString(map);
@@ -215,6 +181,22 @@ public class ProjectController {
     @RequestMapping(value = "{projectId}/wbsTemplateDetailWithSum")
     public String wbsTemplateDetailWithSum(@PathVariable String projectId) throws IOException {
         List<EstimateDetail> templates = this.projectService.listWbsTemplateDetailWithSum(projectId);
+
+        String rootId = "root";
+        EstimateDetail sum = new EstimateDetail();
+        sum.setName("合计");
+        sum.setId(rootId);
+        for (EstimateDetail template : templates) {
+            if (null == template.getPid()) {
+                sum.setCivilEcost(sum.getCivilEcost() + template.getCivilEcost());
+                sum.setEquipmentEcost(sum.getEquipmentEcost() + template.getEquipmentEcost());
+                sum.setInstallEcost(sum.getInstallEcost() + template.getInstallEcost());
+                sum.setFeeEcost(sum.getFeeEcost() + template.getFeeEcost());
+                sum.setOtherEcost(sum.getOtherEcost() + template.getOtherEcost());
+                template.setPid(rootId);
+            }
+        }
+        templates.add(sum);
         Map<String, Object> map = new HashMap<>();
         map.put("rows", templates);
         return JSONObject.toJSONString(map);
@@ -222,7 +204,7 @@ public class ProjectController {
 
     @ResponseBody
     @RequestMapping(value = "{projectId}/exportResult")
-    public String exportResult(@PathVariable String projectId) throws IOException {
+    public String exportResult(@PathVariable String projectId) throws IOException, DatatypeConfigurationException {
         List<EstimateDetail> details = this.projectService.listWbsTemplateDetailWithSum(projectId);
         EstimateVo vo = new EstimateVo();
         EstimateListWrapper wrapper = new EstimateListWrapper();
@@ -246,11 +228,23 @@ public class ProjectController {
         wrapper.setTotalSum(wrapper.getCivilSum() + wrapper.getEquipmentSum() + wrapper.getInstallSum() + wrapper.getFeeSum() + wrapper.getOtherSum());
 
         EstimateDetailWrapper detailWrapper = new EstimateDetailWrapper();
-        detailWrapper.setDetails(details);
+        detailWrapper.setDetail(details);
         wrapper.setEstimateDetail(detailWrapper);
 
         vo.setEstimateList(wrapper);
 
+        String estimateList = JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
+        wsService.importWSExtimateDetails(estimateList, String.valueOf(subProjectId));
+
         return JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "{projectId}/wbsTemplateDetail")
+    public String wbsTemplateDetail(@PathVariable String projectId) {
+        List<WbsTemplate> templates = this.projectService.listWbsTemplateDetail(projectId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("rows", templates);
+        return JSONObject.toJSONString(map);
     }
 }

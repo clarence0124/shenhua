@@ -38,7 +38,7 @@ public class ProjectService {
         List<User> users = this.sqlDao.listByAliasToBean(User.class, sql2);
 
         final String sql = "select cast(o.id as varchar) id, o.projectcode projectCode, o.projectname projectName, o.createEmployee, pe.subProjectName, pe.industryTypeName, pe.disciplineTypeName" +
-                " from ProjectInfo o left join ProjectExt pe on o.id = pe.projectId where o.isDelete = 0";
+                " from ProjectInfo o left join ProjectExt pe on o.id = pe.projectId where isnull(o.isDelete, 0) = 0";
         List<ProjectInfo> projectInfos = this.sqlDao.listByAliasToBean(ProjectInfo.class, sql, page, rows);
         return projectInfos;
     }
@@ -101,7 +101,7 @@ public class ProjectService {
                 "  where ps.projectinfo_id = ? and ps.nodeCode like ?";
         EstimateDetailWrapper estimateDetailWrapper = new EstimateDetailWrapper();
         List<EstimateDetail> details = sqlDao.listByAliasToBean(EstimateDetail.class, detailListSql, new Object[]{lpp.getId(), ps.getProjectInfoId(), ps.getNodeCode() + ".%"});
-        estimateDetailWrapper.setDetails(details);
+        estimateDetailWrapper.setDetail(details);
 
         estimateListWrapper.setEstimateDetail(estimateDetailWrapper);
         vo.setEstimateList(estimateListWrapper);
@@ -166,65 +166,6 @@ public class ProjectService {
         return categories;
     }
 
-    public List<WbsTemplate> listWbsTemplateDetail(String industryType, String disciplineType) {
-        /*List<WbsTemplate> roots = new ArrayList<>();
-
-        WbsTemplate root = new WbsTemplate();
-        root.setName("根1");
-        root.setId(1);
-        root.setCode("code1");
-        roots.add(root);
-
-        WbsTemplate stem1 = new WbsTemplate();
-        stem1.setName("子11");
-        stem1.setId(11);
-        stem1.setCode("11");
-        stem1.setPid(1);
-        roots.add(stem1);
-
-        WbsTemplate stem2 = new WbsTemplate();
-        stem2.setName("子12");
-        stem2.setId(12);
-        stem2.setCode("12");
-        stem2.setPid(1);
-        roots.add(stem2);
-
-        WbsTemplate stem3 = new WbsTemplate();
-        stem3.setName("子121");
-        stem3.setId(121);
-        stem3.setCode("121");
-        stem3.setPid(12);
-        roots.add(stem3);
-        return roots;*/
-
-        StringBuilder sb = new StringBuilder();
-        try {
-            InputStreamReader sr = new InputStreamReader(new FileInputStream("d:/esitmate.json"), Charset.forName("utf-8"));
-            //可以换成工程目录下的其他文本文件
-            BufferedReader br = new BufferedReader(sr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            br.close();
-            sr.close();
-        } catch(Exception e) {
-            sb.append("[]");
-        }
-
-        List<WbsTemplate> wtList = JSONArray.parseArray(sb.toString(), WbsTemplate.class);
-
-        Collections.sort(wtList, new Comparator<WbsTemplate>() {
-            @Override
-            public int compare(WbsTemplate o1, WbsTemplate o2) {
-                Integer j = sort(o1.getNodeDepth(), o2.getNodeDepth());
-                if (0 == j.intValue()) return sort(o1.getBrotherOrderNo(), o2.getBrotherOrderNo());
-                else return j;
-            }
-        });
-        return wtList;
-    }
-
     private Integer sort(Integer i, Integer j) {
         if (null == i && null != j) {
             return 1;
@@ -235,23 +176,8 @@ public class ProjectService {
         }
     }
 
-    public List<WbsTemplate> listWbsTemplateDetail(String projectId) {
-        WbsTemplateRelate wbsTemplateRelate = this.getWbsTemplateRelate(projectId);
-        return this.listWbsTemplateDetail(wbsTemplateRelate.getIndustryType(), wbsTemplateRelate.getDisciplineType());
-    }
-
     private WbsTemplateRelate getWbsTemplateRelate(String projectId) {
         return this.sqlDao.getByAliasToBean(WbsTemplateRelate.class, "select * from WbsTemplateRelate where projectId = ?", new Object[]{projectId});
-    }
-
-    public WbsTemplateRelate saveWbsTemplateRelate(String projectId, WbsTemplateRelate r) {
-        WbsTemplateRelate wtr = getWbsTemplateRelate(projectId);
-        if (wtr != null && (!r.getIndustryType().equals(wtr.getIndustryType()) || !r.getDisciplineType().equals(wtr.getDisciplineType()))) {
-            this.sqlDao.execUpdate("update WbsTemplateRelate set disciplineType = ?, industryType = ? where projectId = ?", new Object[]{r.getDisciplineType(), r.getIndustryType(), projectId});
-        } else if (null == wtr) {
-            this.sqlDao.execUpdate("insert into WbsTemplateRelate(projectId, disciplineType, industryType) values (?, ?, ?)", new Object[]{projectId, r.getDisciplineType(), r.getIndustryType()});
-        }
-        return getWbsTemplateRelate(projectId);
     }
 
 
@@ -292,6 +218,9 @@ public class ProjectService {
             String updateSql = "update ProjectExt set subProjectId = ?, subProjectName = ?, industryType = ?, disciplineType = ?, industryTypeName = ?, disciplineTypeName = ? where projectId = ?";
             sqlDao.execUpdate(updateSql, new Object[]{subProjectId, subProjectName, industryType, disciplineType, typeNames[0], typeNames[1], projectId});
         }
+
+        String del = "delete from ProjectStructureExt where projectStructureId in (select id from ProjectStructure where projectInfo_id = ?)";
+        sqlDao.execUpdate(del, new Object[]{projectId});
     }
 
     public Integer getEstimatePhaseId(Integer projectId) {
@@ -331,6 +260,23 @@ public class ProjectService {
         return psExtList;
     }
 
+    public List<WbsTemplate> listWbsTemplateDetail(String projectId) {
+        ProjectExt pe = this.getProjectExt(Integer.parseInt(projectId));
+
+        String jsonStr = wsService.getWbsTemplateNodesByIndustryTypeAndDisciplineType(pe.getIndustryType(), pe.getDisciplineType());
+        List<WbsTemplate> wtList = JSONArray.parseArray(jsonStr, WbsTemplate.class);
+
+        Collections.sort(wtList, new Comparator<WbsTemplate>() {
+            @Override
+            public int compare(WbsTemplate o1, WbsTemplate o2) {
+                Integer j = sort(o1.getNodeDepth(), o2.getNodeDepth());
+                if (0 == j.intValue()) return sort(o1.getBrotherOrderNo(), o2.getBrotherOrderNo());
+                else return j;
+            }
+        });
+        return wtList;
+    }
+
     private List<EstimateDetail> listCustomEstimateDetail(Integer phaseId, Integer wbsTemplateDetailId) {
         String sql = "select ('2_' + cast(ps.id as varchar)) id, ps.nodename name, pspm.scaleValue amount\n" +
                 ", ps.scaleUnit unit, ps.professionaltype spec \n" +
@@ -359,6 +305,8 @@ public class ProjectService {
                 parent = map.get(vo.getPid());
             }
             vo.setLeafFlag("0");
+            vo.setTempNodeId(null != wbsTemplate.getId() ? String.valueOf(wbsTemplate.getId()) : null);
+            vo.setTempNodeName(wbsTemplate.getName());
 
             if (null != parent) {
                 vo.setNodePathId(parent.getNodePathId() + "/" + vo.getId());

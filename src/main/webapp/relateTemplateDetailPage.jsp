@@ -41,8 +41,8 @@
                     <tr >
                         <%--<th data-options="field:'id',checkbox:true" width="30"></th>--%>
                         <th data-options="field:'name', halign:'center', align:'left'" width="300">名称</th>
-                            <th data-options="field:'nodeDepth', halign:'center', align:'left'" width="120">深度</th>
-                        <th data-options="field:'brotherOrderNo', halign:'center', align:'left'" width="120">排序</th>
+                       <%--     <th data-options="field:'nodeDepth', halign:'center', align:'left'" width="120">深度</th>
+                        <th data-options="field:'brotherOrderNo', halign:'center', align:'left'" width="120">排序</th>--%>
                     </tr>
                     </thead>
                 </table>
@@ -68,7 +68,6 @@
     <script>
 
         function projectStructuresRowStyler(r) {
-            console.log(r)
             if (r && r.estimateTemplateId) {
                 return 'color:blue';
             }
@@ -125,7 +124,8 @@
 
                 top.showAlert(r.msg, function() {
                     if (r.success) {
-                        $('#projectStructures').treegrid('reload')
+                        $('#projectStructures').treegrid('reload');
+                        $('#templateDetails').treegrid('reload');
                     }
                 })
             }, 'json');

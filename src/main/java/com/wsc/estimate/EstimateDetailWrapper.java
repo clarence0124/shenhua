@@ -6,13 +6,13 @@ import java.util.List;
  * Created by Administrator on 2016/12/17.
  */
 public class EstimateDetailWrapper {
-    private List<EstimateDetail> details;
+    private List<EstimateDetail> detail;
 
-    public List<EstimateDetail> getDetails() {
-        return details;
+    public List<EstimateDetail> getDetail() {
+        return detail;
     }
 
-    public void setDetails(List<EstimateDetail> details) {
-        this.details = details;
+    public void setDetail(List<EstimateDetail> detail) {
+        this.detail = detail;
     }
 }
