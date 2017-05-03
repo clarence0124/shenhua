@@ -15,7 +15,7 @@ import javax.xml.ws.Service;
  * 
  */
 @WebServiceClient(name = "WbsTemplateServiceImplService", 
-                  wsdlLocation = "file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/wbsTemplateWSService.wsdl",
+                  wsdlLocation = "http://10.128.143.23:3000/ebs/webService/wbsTemplateWSService?wsdl",
                   targetNamespace = "http://webService.ebs.ecm.shinfo.com/") 
 public class WbsTemplateServiceImplService extends Service {
 
@@ -26,11 +26,11 @@ public class WbsTemplateServiceImplService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL("file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/wbsTemplateWSService.wsdl");
+            url = new URL("http://10.128.143.23:3000/ebs/webService/wbsTemplateWSService?wsdl");
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(WbsTemplateServiceImplService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/wbsTemplateWSService.wsdl");
+                     "Can not initialize the default wsdl from {0}", "http://10.128.143.23:3000/ebs/webService/wbsTemplateWSService?wsdl");
         }
         WSDL_LOCATION = url;
     }
