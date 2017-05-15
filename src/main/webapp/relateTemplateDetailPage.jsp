@@ -1,27 +1,21 @@
-<%--
-  Created by IntelliJ IDEA.
-  com.test.User: Administrator
-  Date: 2016/12/15
-  Time: 10:51
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="p" uri="/WEB-INF/tlds/project.tld" %>
 <!doctype html>
 <html>
 <head>
-    <title>Title</title>
+    <title>项目结构关联模板明细</title>
     <base href="${contextPath}" />
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/bootstrap/easyui.css">
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/color.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/color.css">
 
-    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/jquery.min.js"></script>
 
-    <script type="text/javascript" src="jquery/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="jquery/easyui/locale/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="jquery/utils.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/utils.js"></script>
 </head>
 <body class="easyui-layout" fit="true">
 
@@ -50,8 +44,8 @@
             </div>
 
             <div data-options="region:'west'" style="width:500px" title="全过程管理系统项目结构">
-                <table id="projectStructures" class="easyui-treegrid"  fit="true"
-                       data-options="method: 'get', nowrap:true, fitColumns:true, singleSelect: false, idField:'id', treeField:'nodeName', rownumbers: false,
+                <table id="projectStructures" class="easyui-treegrid"
+                       data-options="method: 'get', nowrap:true, fitColumns:true, singleSelect: false, idField:'id', treeField:'nodeName', rownumbers: false, fit: true,
 						url: '${contextPath}project/${projectId}/projectStructure', loadFilter: treegridLoadFilter2, onBeforeSelect: singleCheckOnBeforeSelect, rowStyler: projectStructuresRowStyler">
                     <thead>
                     <tr >
@@ -65,7 +59,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
 
         function projectStructuresRowStyler(r) {
             if (r && r.estimateTemplateId) {

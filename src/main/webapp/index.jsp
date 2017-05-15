@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  com.test.User: Administrator
-  Date: 2016/12/15
-  Time: 10:51
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="p" uri="/WEB-INF/tlds/project.tld" %>
@@ -13,15 +6,16 @@
 <head>
     <title>神华投控对接集团管理系统原型设计</title>
     <base href="${contextPath}" />
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/bootstrap/easyui.css">
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="jquery/easyui/themes/color.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${contextPath}jquery/easyui/themes/color.css">
 
-    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/jquery.min.js"></script>
 
-    <script type="text/javascript" src="jquery/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="jquery/easyui/locale/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="jquery/utils.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${contextPath}jquery/utils.js"></script>
 </head>
 <body class="easyui-layout" fit="true">
 
@@ -92,11 +86,14 @@
                                         return top.showAlert("请先完善板块大类的信息。");
                                     }
 
+                                    industryTypeName = encodeURI(industryTypeName);
+
                                     var win1 = openIframeWindow({
                                         'title': '2、确定向集团三算管理系统导入数据所使用的模板。',
                                         'width': $(window).width() * 0.8,
                                         'height': $(window).height() * 0.8,
                                         'href': '${contextPath}project/' + project.id + "/relateTemplatePage?industryTypeName=" + industryTypeName,
+                                        'contentType' : 'application/x-www-form-urlencoded; charset=UTF-8',
                                         'buttons': [
                                             {text: '确定', handler: function() {
                                                 var iframeWindow = win1.find('iframe').get(0).contentWindow;
