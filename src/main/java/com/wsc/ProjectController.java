@@ -205,38 +205,49 @@ public class ProjectController {
     @ResponseBody
     @RequestMapping(value = "{projectId}/exportResult")
     public String exportResult(@PathVariable String projectId) throws IOException, DatatypeConfigurationException {
-        List<EstimateDetail> details = this.projectService.listWbsTemplateDetailWithSum(projectId);
-        EstimateVo vo = new EstimateVo();
-        EstimateListWrapper wrapper = new EstimateListWrapper();
+        try {
+            List<EstimateDetail> details = this.projectService.listWbsTemplateDetailWithSum(projectId);
+            EstimateVo vo = new EstimateVo();
+            EstimateListWrapper wrapper = new EstimateListWrapper();
 
-        ProjectExt pe = projectService.getProjectExt(Integer.parseInt(projectId));
-        Integer subProjectId = pe.getSubProjectId();
+            ProjectExt pe = projectService.getProjectExt(Integer.parseInt(projectId));
+            Integer subProjectId = pe.getSubProjectId();
 
-        String estimateId = StringUtils.randomLetterAndNumber(16);
-        wrapper.setId(estimateId);
-        wrapper.setSubprojId(subProjectId);
-        for (EstimateDetail template : details) {
-            if (null == template.getPid()) {
-                wrapper.setCivilSum(wrapper.getCivilSum() + template.getCivilEcost());
-                wrapper.setEquipmentSum(wrapper.getEquipmentSum() + template.getEquipmentEcost());
-                wrapper.setInstallSum(wrapper.getInstallSum() + template.getInstallEcost());
-                wrapper.setFeeSum(wrapper.getFeeSum() + template.getFeeEcost());
-                wrapper.setOtherSum(wrapper.getOtherSum() + template.getOtherEcost());
+            String estimateId = String.valueOf(projectId);
+            wrapper.setId(estimateId);
+            wrapper.setSubprojId(subProjectId);
+            for (EstimateDetail template : details) {
+                if (null == template.getPid()) {
+                    wrapper.setCivilSum(wrapper.getCivilSum() + template.getCivilEcost());
+                    wrapper.setEquipmentSum(wrapper.getEquipmentSum() + template.getEquipmentEcost());
+                    wrapper.setInstallSum(wrapper.getInstallSum() + template.getInstallEcost());
+                    wrapper.setFeeSum(wrapper.getFeeSum() + template.getFeeEcost());
+                    wrapper.setOtherSum(wrapper.getOtherSum() + template.getOtherEcost());
+                }
+                template.setEstimateId(estimateId);
             }
-            template.setEstimateId(estimateId);
+            wrapper.setTotalSum(wrapper.getCivilSum() + wrapper.getEquipmentSum() + wrapper.getInstallSum() + wrapper.getFeeSum() + wrapper.getOtherSum());
+
+            EstimateDetailWrapper detailWrapper = new EstimateDetailWrapper();
+            detailWrapper.setDetail(details);
+            wrapper.setEstimateDetail(detailWrapper);
+
+            vo.setEstimateList(wrapper);
+
+            String estimateList = JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
+            wsService.importWSExtimateDetails(estimateList, String.valueOf(subProjectId));
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("success", true);
+            return JSONObject.toJSONString(params);
+        } catch (Exception e) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("success", false);
+            params.put("error", e.getMessage());
+            e.printStackTrace();
+            return JSONObject.toJSONString(params);
         }
-        wrapper.setTotalSum(wrapper.getCivilSum() + wrapper.getEquipmentSum() + wrapper.getInstallSum() + wrapper.getFeeSum() + wrapper.getOtherSum());
 
-        EstimateDetailWrapper detailWrapper = new EstimateDetailWrapper();
-        detailWrapper.setDetail(details);
-        wrapper.setEstimateDetail(detailWrapper);
-
-        vo.setEstimateList(wrapper);
-
-        String estimateList = JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
-        wsService.importWSExtimateDetails(estimateList, String.valueOf(subProjectId));
-
-        return JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
     }
 
     @ResponseBody

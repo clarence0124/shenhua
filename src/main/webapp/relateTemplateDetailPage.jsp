@@ -134,8 +134,14 @@
                 'width': $(window).width() * 0.8,
                 'height': $(window).height() * 0.8,
                 'href': '${contextPath}project/${projectId}/exportPage',
-                'buttons': [{text: '确认并导出', handler: function() {
-                    window.location.href = '${contextPath}project/${projectId}/exportResult';
+                'buttons': [{text: '确认并导出', handler: function(r) {
+                    $.post('${contextPath}project/${projectId}/exportResult', function(r) {
+                        if (r.success) {
+                            alert('导出成功');
+                        } else {
+                            alert(r.error);
+                        }
+                    }, 'json')
                 }}, {text: '取消', handler: function() {
                     win.dialog('close')
                 }}]
