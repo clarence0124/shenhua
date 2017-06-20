@@ -2,8 +2,7 @@ package com.wsc;
 
 import com.alibaba.fastjson.JSONArray;
 import com.itspub.util.StringUtils;
-import com.shinfo.ecm.ebs.webService.WbsTemplateServiceImpl;
-import com.shinfo.ecm.ebs.webService.WbsTemplateServiceImplService;
+import com.shinfo.ecm.ebs.webService.*;
 import com.wsc.subProject.SubProject;
 import com.wsc.wbsTemplate.WbsTemplateCategory;
 import org.springframework.stereotype.Service;
@@ -11,10 +10,11 @@ import org.springframework.stereotype.Service;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
+import javax.xml.ws.BindingProvider;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/4/17.
@@ -22,7 +22,32 @@ import java.util.List;
 @Service
 public class WsService {
 
-    private WbsTemplateServiceImpl wbsTemplateService = new WbsTemplateServiceImplService().getWbsTemplateServiceImplPort();
+
+    public static final String WSDL_USER = "ZZSOAPSYXWJJ";
+    public static final String WSDL_PASS = "Xzi&2@#bnT9aBRW7~9$/@hkNdS}4cu#EAjw>jmvG";
+
+    private SIWbsTemplateWSGetWbsTemplateListSynOut wbsTemplateWsdlService = new SIWbsTemplateWSGetWbsTemplateListSynOutService().getHTTPPort();
+    private SIWbsTemplateWSGetSubProjectListSynOut subjectWsdlService = new SIWbsTemplateWSGetSubProjectListSynOutService().getHTTPPort();
+    private SIWbsTemplateWSImportWSExtimateDetailsSynOut importExtimateDetailWsdlService = new SIWbsTemplateWSImportWSExtimateDetailsSynOutService().getHTTPPort();
+    private SIWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSynOut getWbsTemplateNodesByIndustryTypeAndDisciplineTypeService = new SIWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSynOutService().getHTTPPort();
+
+    {
+        Map<String, Object> requestContext = ((BindingProvider) wbsTemplateWsdlService).getRequestContext();
+        requestContext.put(BindingProvider.USERNAME_PROPERTY, WSDL_USER);
+        requestContext.put(BindingProvider.PASSWORD_PROPERTY, WSDL_PASS);
+
+        requestContext = ((BindingProvider) subjectWsdlService).getRequestContext();
+        requestContext.put(BindingProvider.USERNAME_PROPERTY, WSDL_USER);
+        requestContext.put(BindingProvider.PASSWORD_PROPERTY, WSDL_PASS);
+
+        requestContext = ((BindingProvider) importExtimateDetailWsdlService).getRequestContext();
+        requestContext.put(BindingProvider.USERNAME_PROPERTY, WSDL_USER);
+        requestContext.put(BindingProvider.PASSWORD_PROPERTY, WSDL_PASS);
+
+        requestContext = ((BindingProvider) getWbsTemplateNodesByIndustryTypeAndDisciplineTypeService).getRequestContext();
+        requestContext.put(BindingProvider.USERNAME_PROPERTY, WSDL_USER);
+        requestContext.put(BindingProvider.PASSWORD_PROPERTY, WSDL_PASS);
+    }
 
     public String getSubProjectList(String projName) {
 
@@ -42,7 +67,7 @@ public class WsService {
         list.add(s2);
 
         return JSONArray.toJSONString(list);*/
-        String subProjectList = wbsTemplateService.getSubProjectList(projName);
+        String subProjectList = subjectWsdlService.getSubProjectList(projName);
         return !"".equals(subProjectList) ? subProjectList : "[]";
     }
 
@@ -64,7 +89,7 @@ public class WsService {
         categories.add(c2);
         return JSONArray.toJSONString(categories);*/
 
-        String str = wbsTemplateService.getWbsTemplateList();
+        String str = wbsTemplateWsdlService.getWbsTemplateList();
         if (!StringUtils.hasText(str)) return "[]";
 
         List<WbsTemplateCategory> wbsList = JSONArray.parseArray(str, WbsTemplateCategory.class);
@@ -103,7 +128,10 @@ public class WsService {
     }
 
     public String getWbsTemplateNodesByIndustryTypeAndDisciplineType(String industryType, String disciplineType) {
-        String str = wbsTemplateService.getWbsTemplateNodesByIndustryTypeAndDisciplineType(industryType, disciplineType);
+        GetWbsTemplateNodesByIndustryTypeAndDisciplineType params = new GetWbsTemplateNodesByIndustryTypeAndDisciplineType();
+        params.setIndustryType(industryType);
+        params.setDisciplineType(disciplineType);
+        String str = getWbsTemplateNodesByIndustryTypeAndDisciplineTypeService.siWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSynOut(params).getReturn();
         return (!StringUtils.hasText(str)) ? "[]" : str;
     }
 
@@ -117,10 +145,12 @@ public class WsService {
      */
     public void importWSExtimateDetails(String estimateList, String subProjectId) throws DatatypeConfigurationException {
         GregorianCalendar gcal = new GregorianCalendar();
-        XMLGregorianCalendar xgcal= DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+        XMLGregorianCalendar xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
 
         int totalLen = estimateList.length();
         int perLen = 1024 * 250; // 每次发送内容不得超过500K
+
+
 
         // 分块调用webservice接口传送模板数据
         {
@@ -129,14 +159,22 @@ public class WsService {
             for (int i = 0; i < blockSize; i++) {
                 int sortNum = i+1;
                 int start = i * perLen;
-
+                ImportWSExtimateDetails details = new ImportWSExtimateDetails();
                 if (i != blockSize - 1) {
                     String content = estimateList.substring(start, start + perLen);
-                    wbsTemplateService.importWSExtimateDetails(content, subProjectId, xgcal, "1", sortNum, "0");
+                    details.setExtimateList(content);
+                    details.setIsTheLast("0");
+                    importExtimateDetailWsdlService.siWbsTemplateWSImportWSExtimateDetailsSynOut(details);
                 } else {
                     String content = estimateList.substring(start, start + ((0 < less) ? less : perLen));
-                    wbsTemplateService.importWSExtimateDetails(content, subProjectId, xgcal, "1", sortNum, "1");
+                    details.setExtimateList(content);
+                    details.setIsTheLast("1");
                 }
+                details.setSubjId(subProjectId);
+                details.setTimeStamp(xgcal);
+                details.setType("1");
+                details.setOrderNum(sortNum);
+                importExtimateDetailWsdlService.siWbsTemplateWSImportWSExtimateDetailsSynOut(details);
             }
         }
 

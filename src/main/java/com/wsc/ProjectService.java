@@ -183,7 +183,8 @@ public class ProjectService {
 
     public List<ProjectStructure> listProjectStructureByProjectId(Integer projectId, Integer phaseId) {
         String sql = "select ps.id, ps.nodeName, ps.nodeCode, ps.projectInfo_id projectInfoId, ps.parentid parentId, pse.estimateTemplateId from ProjectStructure ps" +
-                " left join ProjectStructureExt pse on ps.id = pse.projectStructureId where ps.projectInfo_id = ? and ps.phaseIds like ? order by ps.id";
+                " left join ProjectStructureExt pse on ps.id = pse.projectStructureId where ps.projectInfo_id = ? and ps.phaseIds like ? order by" +
+                " len(ps.nodeCode)- len(REPLACE(ps.nodeCode, '.', '')), cast(SUBSTRING(ps.nodeCode, len(ps.nodeCode) - charindex('.', reverse(ps.nodeCode)) + 2, LEN(ps.nodeCode)) as int)";
         List<ProjectStructure> ps = this.sqlDao.listByAliasToBean(ProjectStructure.class, sql, new Object[]{projectId, "%," + phaseId + ",%"});
         return ps;
     }

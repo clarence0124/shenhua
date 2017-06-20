@@ -37,8 +37,8 @@
             <thead>
             <tr >
                 <th data-options="field:'id',checkbox:true" width="30"></th>
-                <th data-options="field:'subProjName', halign:'center', align:'left'" width="350">子项目名称</th>
-                <th data-options="field:'projectName', halign:'center', align:'left'" width="350">主项目名称</th>
+                <th data-options="field:'subProjName', halign:'center', align:'left', formatter:delScriptFormtter" width="350">子项目名称</th>
+                <th data-options="field:'projectName', halign:'center', align:'left', formatter:delScriptFormtter" width="350">主项目名称</th>
                 <th data-options="field:'industryTypeName', halign:'center', align:'left'" width="200">板块大类</th>
             </tr>
             </thead>
@@ -46,6 +46,7 @@
     </div>
 
     <script>
+
         $('#projName').on('keypress', function(ev) {
             if (ev.keyCode == 13) {
                 $('#datagrid').datagrid({
@@ -57,6 +58,11 @@
             }
             ev.stopPropagation()
         })
+
+        function delScriptFormtter(v) {
+
+            return v ? v.replace(new RegExp(/<\/?.*?script.*?>/ig), '') : '';
+        }
     </script>
 </body>
 </html>

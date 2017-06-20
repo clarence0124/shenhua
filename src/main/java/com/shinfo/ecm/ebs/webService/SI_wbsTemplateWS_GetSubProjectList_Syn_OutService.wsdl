@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="SI_wbsTemplateWS_GetSubProjectList_Syn_Out"
+                  targetNamespace="http://www.shenhuagroup.com.cn/ZAOJIA"
+                  xmlns:p2="http://webService.ebs.ecm.shinfo.com/" xmlns:p1="http://www.shenhuagroup.com.cn/ZAOJIA"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:documentation/>
+    <wsp:UsingPolicy wsdl:required="true"/>
+    <wsp:Policy wsu:Id="OP_getSubProjectList"/>
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://webService.ebs.ecm.shinfo.com/"
+                    xmlns="http://webService.ebs.ecm.shinfo.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:element name="getSubProjectList" type="getSubProjectList"/>
+            <xsd:element name="getSubProjectListResponse" type="getSubProjectListResponse"/>
+            <xsd:complexType name="getSubProjectListResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="getSubProjectList">
+                <xsd:sequence>
+                    <xsd:element name="projName" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="p2.getSubProjectList">
+        <wsdl:documentation/>
+        <wsdl:part name="parameters" element="p2:getSubProjectList"/>
+    </wsdl:message>
+    <wsdl:message name="p2.getSubProjectListResponse">
+        <wsdl:documentation/>
+        <wsdl:part name="parameters" element="p2:getSubProjectListResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="SI_wbsTemplateWS_GetSubProjectList_Syn_Out">
+        <wsdl:documentation/>
+        <wsdl:operation name="getSubProjectList">
+            <wsdl:documentation/>
+            <wsp:Policy>
+                <wsp:PolicyReference URI="#OP_getSubProjectList"/>
+            </wsp:Policy>
+            <wsdl:input message="p1:p2.getSubProjectList"/>
+            <wsdl:output message="p1:p2.getSubProjectListResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="SI_wbsTemplateWS_GetSubProjectList_Syn_OutBinding"
+                  type="p1:SI_wbsTemplateWS_GetSubProjectList_Syn_Out">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"
+                      xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+        <wsdl:operation name="getSubProjectList">
+            <soap:operation soapAction="http://sap.com/xi/WebService/soap1.1"
+                            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+            <wsdl:input>
+                <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="SI_wbsTemplateWS_GetSubProjectList_Syn_OutService">
+        <wsdl:port name="HTTP_Port" binding="p1:SI_wbsTemplateWS_GetSubProjectList_Syn_OutBinding">
+            <soap:address
+                    location="http://shpipwd.sh217.com:8100/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BS_SFLYWDC&amp;receiverParty=&amp;receiverService=&amp;interface=SI_wbsTemplateWS_GetSubProjectList_Syn_Out&amp;interfaceNamespace=http%3A%2F%2Fwww.shenhuagroup.com.cn%2FZAOJIA"
+                    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+        </wsdl:port>
+        <wsdl:port name="HTTPS_Port" binding="p1:SI_wbsTemplateWS_GetSubProjectList_Syn_OutBinding">
+            <soap:address
+                    location="https://shpipwd.sh217.com:50201/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BS_SFLYWDC&amp;receiverParty=&amp;receiverService=&amp;interface=SI_wbsTemplateWS_GetSubProjectList_Syn_Out&amp;interfaceNamespace=http%3A%2F%2Fwww.shenhuagroup.com.cn%2FZAOJIA"
+                    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
