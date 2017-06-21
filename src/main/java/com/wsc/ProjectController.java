@@ -237,6 +237,8 @@ public class ProjectController {
             String estimateList = JSONObject.toJSONString(vo, new DoubleFormatter()).toString();
             wsService.importWSExtimateDetails(estimateList, String.valueOf(subProjectId));
 
+            this.projectService.saveExportEstimateDetails(projectId, wbsTemplateDetailWithSum(projectId));
+
             Map<String, Object> params = new HashMap<>();
             params.put("success", true);
             return JSONObject.toJSONString(params);

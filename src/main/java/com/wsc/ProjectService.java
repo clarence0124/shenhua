@@ -2,14 +2,13 @@ package com.wsc;
 
 import com.alibaba.fastjson.JSONArray;
 import com.itspub.framework.dao.SqlDao;
-import com.test.User;
-import com.wsc.export.budget.BudgetVo;
 import com.wsc.entity.ProjectExt;
 import com.wsc.entity.ProjectStructureExt;
 import com.wsc.estimate.EstimateDetail;
 import com.wsc.estimate.EstimateDetailWrapper;
 import com.wsc.estimate.EstimateListWrapper;
 import com.wsc.estimate.EstimateVo;
+import com.wsc.export.budget.BudgetVo;
 import com.wsc.wbsTemplate.WbsTemplate;
 import com.wsc.wbsTemplate.WbsTemplateCategory;
 import com.wsc.wbsTemplate.WbsTemplateDetailRelate;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.*;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,9 +31,6 @@ public class ProjectService {
     @Resource
     private SqlDao sqlDao;
     public List<ProjectInfo> listProjectInfo(Integer page, Integer rows) {
-        String sql2 = "select flag status from userInfos";
-        List<User> users = this.sqlDao.listByAliasToBean(User.class, sql2);
-
         final String sql = "select cast(o.id as varchar) id, o.projectcode projectCode, o.projectname projectName, o.createEmployee, pe.subProjectName, pe.industryTypeName, pe.disciplineTypeName" +
                 " from ProjectInfo o left join ProjectExt pe on o.id = pe.projectId where isnull(o.isDelete, 0) = 0";
         List<ProjectInfo> projectInfos = this.sqlDao.listByAliasToBean(ProjectInfo.class, sql, page, rows);
@@ -364,5 +358,13 @@ public class ProjectService {
     public ProjectExt getProjectExt(Integer projectId) {
         String sql = "select * from ProjectExt where projectId = ?";
         return this.sqlDao.getByAliasToBean(ProjectExt.class, sql, new Object[]{projectId});
+    }
+
+    @Transactional
+    public void saveExportEstimateDetails(String projectId, String exportContent) {
+        String sql = "delete from EstimateExportInfo where projectId = ?";
+        this.sqlDao.execUpdate(sql, new Object[]{projectId});
+        String sql1 = "insert into EstimateExportInfo(projectId, exportContent) values (?, ?)";
+        this.sqlDao.execUpdate(sql1, new Object[]{projectId, exportContent});
     }
 }
