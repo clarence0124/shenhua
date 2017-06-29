@@ -15,7 +15,7 @@ import javax.xml.ws.Service;
  * 
  */
 @WebServiceClient(name = "SI_wbsTemplateWS_getWbsTemplateList_Syn_OutService", 
-                  wsdlLocation = "https://shpipwd.sh217.com:50201/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BS_SFLYWDC&amp;receiverParty=&amp;receiverService=&amp;interface=SI_wbsTemplateWS_getWbsTemplateList_Syn_Out&amp;interfaceNamespace=http%3A%2F%2Fwww.shenhuagroup.com.cn%2FZAOJIA",
+                  wsdlLocation = "file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/SI_wbsTemplateWS_getWbsTemplateList_Syn_OutService.wsdl",
                   targetNamespace = "http://www.shenhuagroup.com.cn/ZAOJIA") 
 public class SIWbsTemplateWSGetWbsTemplateListSynOutService extends Service {
 
