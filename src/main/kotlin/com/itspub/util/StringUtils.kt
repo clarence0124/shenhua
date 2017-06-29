@@ -7,8 +7,6 @@ import java.util.*
  */
 object StringUtils {
 
-
-
     private fun getLetterAndNumberArray(): Array<Char?> {
         var arrayOfNulls = kotlin.arrayOfNulls<Char>(36)
         for (i in IntRange(0, 9)) {
