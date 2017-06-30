@@ -15,7 +15,7 @@ import javax.xml.ws.Service;
  * 
  */
 @WebServiceClient(name = "SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService", 
-                  wsdlLocation = "file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl",
+                  wsdlLocation = "file:/D:/template/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl",
                   targetNamespace = "http://www.shenhuagroup.com.cn/ZAOJIA") 
 public class SIWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSynOutService extends Service {
 
@@ -27,11 +27,11 @@ public class SIWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSy
     static {
         URL url = null;
         try {
-            url = new URL("file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl");
+            url = new URL("file:/D:/template/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl");
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(SIWbsTemplateWSGetWbsTemplateNodesByIndustryTypeAndDisciplineTypeSynOutService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "file:/E:/workspace/idea_2014/gradle-kotlin/src/main/java/com/shinfo/ecm/ebs/webService/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl");
+                     "Can not initialize the default wsdl from {0}", "file:/D:/template/SI_wbsTemplateWS_getWbsTemplateNodesByIndustryTypeAndDisciplineType_Syn_OutService.wsdl");
         }
         WSDL_LOCATION = url;
     }
