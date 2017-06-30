@@ -80,7 +80,9 @@
         function treegridLoadFilter(data) {
             if (data && data.rows) {
                 for (var i = 0; i < data.rows.length; i++) {
-                    data.rows[i]._parentId = data.rows[i].pid
+                    var curRow = data.rows[i];
+                    curRow._parentId = curRow.pid
+                    curRow.state = 'closed'
                 }
                 return data;
             }
@@ -89,8 +91,17 @@
 
         function treegridLoadFilter2(data) {
             if (data && data.rows) {
+                var root = '';
                 for (var i = 0; i < data.rows.length; i++) {
-                    data.rows[i]._parentId = data.rows[i].parentId
+                    var curRow = data.rows[i]
+                    curRow._parentId = curRow.parentId
+                    if (!curRow.parentId) {
+                        root = curRow.id
+                        curRow.state = 'open';
+                    }
+                    if (curRow.parentId == root) {
+                        curRow.state = 'open';
+                    }
                 }
                 return data;
             }

@@ -150,8 +150,6 @@ public class WsService {
         int totalLen = estimateList.length();
         int perLen = 1024 * 250; // 每次发送内容不得超过500K
 
-
-
         // 分块调用webservice接口传送模板数据
         {
             int less = totalLen % perLen;
@@ -164,7 +162,6 @@ public class WsService {
                     String content = estimateList.substring(start, start + perLen);
                     details.setExtimateList(content);
                     details.setIsTheLast("0");
-                    importExtimateDetailWsdlService.siWbsTemplateWSImportWSExtimateDetailsSynOut(details);
                 } else {
                     String content = estimateList.substring(start, start + ((0 < less) ? less : perLen));
                     details.setExtimateList(content);

@@ -16,7 +16,7 @@ public class ProjectStructure {
     private Integer parentId;
     private List<ProjectStructure> children;
 
-    private String state = "open";
+    private String state = "closed";
     private String tempId;
 
     @Transient
