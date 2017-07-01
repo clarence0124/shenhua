@@ -1,0 +1,11 @@
+10.128.143.109 shpidci shpidci.shenhua.cc
+10.128.143.109 shpidci shpidci.sh217.com
+10.128.136.192 shecdci
+10.128.142.218 shpiqci shpiqci.sh217.com
+10.128.142.218 shpiqci shpiqci.shenhua.cc
+10.128.133.151 shpipci01 shpipci01.sh217.com
+10.128.133.152 shpipci02 shpipci02.sh217.com
+10.128.133.153 shpipci shpipci.sh217.com
+10.128.133.213 shpipwd shpipwd.sh217.com
+10.128.136.189 shsmp shsmp.sh217.com
+10.128.143.8   shsmd shsmd.sh217.com
