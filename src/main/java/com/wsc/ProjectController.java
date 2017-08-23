@@ -188,11 +188,13 @@ public class ProjectController {
         sum.setId(rootId);
         for (EstimateDetail template : templates) {
             if (null == template.getPid()) {
+                sum.setMineEcost(sum.getMineEcost() + template.getMineEcost());
                 sum.setCivilEcost(sum.getCivilEcost() + template.getCivilEcost());
                 sum.setEquipmentEcost(sum.getEquipmentEcost() + template.getEquipmentEcost());
                 sum.setInstallEcost(sum.getInstallEcost() + template.getInstallEcost());
                 sum.setFeeEcost(sum.getFeeEcost() + template.getFeeEcost());
                 sum.setOtherEcost(sum.getOtherEcost() + template.getOtherEcost());
+                sum.setEmiSum(sum.getEmiSum() + template.getEmiSum());
                 template.setPid(rootId);
             }
         }

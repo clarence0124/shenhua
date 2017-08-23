@@ -275,7 +275,12 @@ public class ProjectService {
     private List<EstimateDetail> listCustomEstimateDetail(Integer phaseId, Integer wbsTemplateDetailId) {
         String sql = "select ('2_' + cast(ps.id as varchar)) id, ps.nodename name, pspm.scaleValue amount\n" +
                 ", ps.scaleUnit unit, ps.professionaltype spec \n" +
-                ", pspm.compMoney1 civilEcost, pspm.compMoney3 equipmentEcost, pspm.compMoney4 installEcost, (pspm.compMoney2 - pspm.compMoney3 - pspm.compMoney4) feeEcost, pspm.compMoney8 otherEcost\n" +
+                ", case when ps.professionaltype = '矿建' then isnull(pspm.money, 0) else 0 end mineEcost\n" +
+                ", case when ps.professionaltype = '土建' then isnull(pspm.money, 0) else 0 end civilEcost\n" +
+                ", case when ps.professionaltype = '设备' then isnull(pspm.money, 0) else 0 end equipmentEcost\n" +
+                ", case when ps.professionaltype = '安装' then isnull(pspm.money, 0) else 0 end installEcost\n" +
+                ", case when ps.professionaltype = '其他' then isnull(pspm.money, 0) else 0 end feeEcost\n" +
+                // ", pspm.compMoney1 civilEcost, pspm.compMoney3 equipmentEcost, pspm.compMoney4 installEcost, (pspm.compMoney2 - pspm.compMoney3 - pspm.compMoney4) feeEcost, pspm.compMoney8 otherEcost\n" +
                 " from ProjectStructureExt pse inner join ProjectStructure ps on pse.projectStructureId = ps.id\n" +
                 " inner join ProjectStructurePhaseMoney pspm on pspm.projectphase_id = ? and pspm.projectstructure_id = ps.id where pse.estimateTemplateId = ?";
         return this.sqlDao.listByAliasToBean(EstimateDetail.class, sql, new Object[]{phaseId, wbsTemplateDetailId});
@@ -327,21 +332,26 @@ public class ProjectService {
                         leaf.setNodePath(vo.getNodePath() + "/" + leaf.getId());
                         leaf.setNodePathId(vo.getNodePathId() + "->" + leaf.getName());
                         leaf.setNodeDepth(vo.getNodeDepth() + 1);
+                        leaf.setEmiSum(leaf.getInstallEcost() + leaf.getEquipmentEcost());
 
+                        leafEstimateSum.setMineEcost(leafEstimateSum.getMineEcost() + leaf.getMineEcost());
                         leafEstimateSum.setCivilEcost(leafEstimateSum.getCivilEcost() + leaf.getCivilEcost());
                         leafEstimateSum.setEquipmentEcost(leafEstimateSum.getEquipmentEcost() + leaf.getEquipmentEcost());
                         leafEstimateSum.setInstallEcost(leafEstimateSum.getInstallEcost() + leaf.getInstallEcost());
                         leafEstimateSum.setFeeEcost(leafEstimateSum.getFeeEcost() + leaf.getFeeEcost());
                         leafEstimateSum.setOtherEcost(leafEstimateSum.getOtherEcost() + leaf.getOtherEcost());
+                        leafEstimateSum.setEmiSum(leafEstimateSum.getEmiSum() + leaf.getEmiSum());
                     }
 
                     EstimateDetail p = vo;
                     while(null != p) {
+                        p.setMineEcost(leafEstimateSum.getMineEcost() + leafEstimateSum.getMineEcost());
                         p.setCivilEcost(p.getCivilEcost() + leafEstimateSum.getCivilEcost());
                         p.setEquipmentEcost(p.getEquipmentEcost() + leafEstimateSum.getEquipmentEcost());
                         p.setInstallEcost(p.getInstallEcost() + leafEstimateSum.getInstallEcost());
                         p.setFeeEcost(p.getFeeEcost() + leafEstimateSum.getFeeEcost());
                         p.setOtherEcost(p.getOtherEcost() + leafEstimateSum.getOtherEcost());
+                        p.setEmiSum(p.getEmiSum() + leafEstimateSum.getEmiSum());
                         if (null != p.getPid()) {
                             p = map.get(p.getPid());
                         } else {
